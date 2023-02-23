@@ -13,6 +13,13 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         Log.d("test", "Activity: onCreate")
+
+        supportFragmentManager
+            .beginTransaction()
+            .addToBackStack(null) //added for looking what happens when will pressed "back"
+            .replace(R.id.place_holder,Fragment1.newInstance())
+            .commit()
+
     }
 
     override fun onStart() {
