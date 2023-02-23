@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LifecycleOwner
 import com.example.homework_5.databinding.Fragment1Binding
 
 
@@ -18,6 +20,7 @@ class Fragment1 : Fragment() {
     }
 
     lateinit var binding: Fragment1Binding //add binding in Fragment1
+    private val shareModel: DataShare by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +36,12 @@ class Fragment1 : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("test", "onViewCreated")
+
+        shareModel.shareForFragment1.observe(activity as LifecycleOwner, {
+            binding.tvFragment1.text = it
+        })
+
+
     }
 
     override fun onStart() {

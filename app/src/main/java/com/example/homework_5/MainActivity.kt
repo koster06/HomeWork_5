@@ -3,11 +3,14 @@ package com.example.homework_5
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
+import androidx.lifecycle.ViewModel
 import com.example.homework_5.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
+    private val shareModel: DataShare by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -19,6 +22,13 @@ class MainActivity : AppCompatActivity() {
             .addToBackStack(null) //added for looking what happens when will pressed "back"
             .replace(R.id.place_holder,Fragment1.newInstance())
             .commit()
+        shareModel.shareForFragment1.observe(this, {
+            binding.textView.text = it
+        })
+
+//        binding.bSender.setOnClickListener {
+//            shareModel.shareForFragment1.value = binding.etSenderText.text.toString()
+//        }
 
     }
 
