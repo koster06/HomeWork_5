@@ -22,13 +22,20 @@ class MainActivity : AppCompatActivity() {
             .addToBackStack(null) //added for looking what happens when will pressed "back"
             .replace(R.id.place_holder,Fragment1.newInstance())
             .commit()
-        shareModel.shareForFragment1.observe(this, {
-            binding.textView.text = it
-        })
+//        shareModel.shareForFragment1.observe(this, {
+//            binding.textView.text = it
+//        })
 
-//        binding.bSender.setOnClickListener {
-//            shareModel.shareForFragment1.value = binding.etSenderText.text.toString()
-//        }
+        binding.bSender.setOnClickListener {
+            shareModel.shareForFragment1.value = binding.etSenderText.text.toString()
+        }
+
+        binding.radioButton1.setOnClickListener {
+            shareModel.shareForFragment1Boolean.value = true
+        }
+        binding.radioButton2.setOnClickListener {
+            shareModel.shareForFragment1Boolean.value = false
+        }
 
     }
 
