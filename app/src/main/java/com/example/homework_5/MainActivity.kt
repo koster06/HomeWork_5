@@ -26,27 +26,41 @@ class MainActivity : AppCompatActivity() {
             openFrag(it)
         })
 
-        binding.bRight.setOnClickListener { // button for random changing Fragments
-                val start = 1                       // I didn't want to lumber up the screen, there is a mess
-                val end = 4
-                openFrag( rand(start, end))
+        binding.button4.setOnClickListener {
+            openFrag(1)
+        }
+        binding.button5.setOnClickListener {
+            openFrag(2)
+        }
+        binding.button6.setOnClickListener {
+            openFrag(3)
+        }
+        binding.button7.setOnClickListener {
+            openFrag(4)
         }
 
-        binding.bSender.setOnClickListener {
-            shareModel.shareForFragment1.value = binding.etSenderText.text.toString()
-            binding.etSenderText.text.clear()
-        }
 
-        binding.radioButton1.setOnClickListener {
-            shareModel.shareForFragment1Boolean.value = true
-        }
-        binding.radioButton2.setOnClickListener {
-            shareModel.shareForFragment1Boolean.value = false
-        }
+//        binding.bRight.setOnClickListener { // button for random changing Fragments
+//                val start = 1                       // I didn't want to lumber up the screen, there is a mess
+//                val end = 4
+//                openFrag( rand(start, end))
+//        }
 
-        binding.tvDateSender.setOnClickListener {
-            shareModel.shareForFragment1Date.value = myCalendar.time
-        }
+//        binding.bSender.setOnClickListener {
+//            shareModel.shareForFragment1.value = binding.etSenderText.text.toString()
+//            binding.etSenderText.text.clear()
+//        }
+//
+//        binding.radioButton1.setOnClickListener {
+//            shareModel.shareForFragment1Boolean.value = true
+//        }
+//        binding.radioButton2.setOnClickListener {
+//            shareModel.shareForFragment1Boolean.value = false
+//        }
+//
+//        binding.tvDateSender.setOnClickListener {
+//            shareModel.shareForFragment1Date.value = myCalendar.time
+//        }
 
     }// I didn't want to do the first fragment into the second.... For my mind it so simple
 
