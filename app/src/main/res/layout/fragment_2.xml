@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#E485A6"
     tools:context=".Fragment2">
 
     <FrameLayout
@@ -17,6 +18,16 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvFrag2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:padding="5dp"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/bCallFragment1"

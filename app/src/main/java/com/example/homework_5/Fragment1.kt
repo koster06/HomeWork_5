@@ -42,6 +42,7 @@ class Fragment1 : Fragment() {
 
         binding.bCallFragment2.setOnClickListener {
             shareModelBoolean.shareForActivity.value = true
+            shareModelString.shareForFragment2.value = binding.tvFragment1.text.toString()
         }
 
         shareModelString.shareForFragment1.observe(activity as LifecycleOwner, {

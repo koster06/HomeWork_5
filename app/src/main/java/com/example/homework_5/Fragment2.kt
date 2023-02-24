@@ -12,6 +12,7 @@ class Fragment2 : Fragment() {
 
     lateinit var binding: Fragment2Binding
     private val shareModelBoolean: DataShare by activityViewModels()
+    private val shareModelString: DataShare by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,6 +26,7 @@ class Fragment2 : Fragment() {
         binding.bCallFragment1.setOnClickListener {
             shareModelBoolean.shareForActivity.value = false
         }
+        binding.tvFrag2.text = shareModelString.shareForFragment2.value
     }
 
     companion object {
