@@ -1,38 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#E485A6"
     tools:context=".Fragment2">
 
-    <FrameLayout
-        android:id="@+id/place_holder2"
-        android:layout_width="match_parent"
-        android:layout_height="100dp">
+    <LinearLayout style="@style/my_layout">
 
-    </FrameLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tvFrag2"
+        <ImageView
+            android:id="@+id/imageView4"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:padding="5dp"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:layout_height="259dp"
+            android:src="@drawable/bird3" />
 
         <Button
             android:id="@+id/bCallFragment1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="To Frag 3" />
+
+        <TextView
+            android:id="@+id/tvFrag2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
 </FrameLayout>
