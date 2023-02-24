@@ -11,8 +11,8 @@ import com.example.homework_5.databinding.Fragment2Binding
 class Fragment2 : Fragment() {
 
     lateinit var binding: Fragment2Binding
-    private val shareModelBoolean: DataShare by activityViewModels()
     private val shareModelString: DataShare by activityViewModels()
+    private val shareModelButton: DataShare by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,7 +24,7 @@ class Fragment2 : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.bCallFragment1.setOnClickListener {
-            shareModelBoolean.shareForActivity.value = false
+            shareModelButton.shareForActivity.value = 3
         }
         binding.tvFrag2.text = shareModelString.shareForFragment2.value
     }

@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
 import com.example.homework_5.databinding.ActivityMainBinding
-import com.example.homework_5.databinding.Fragment2Binding
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -28,11 +26,7 @@ class MainActivity : AppCompatActivity() {
             .commit()
 
         shareModel.shareForActivity.observe(this, {
-            callFragment2(it)
-        })
-
-        shareModel.shareForActivity.observe(this, {
-            callFragment1(it)
+            openFrag(it)
         })
 
         binding.bSender.setOnClickListener {
@@ -51,29 +45,26 @@ class MainActivity : AppCompatActivity() {
             shareModel.shareForFragment1Date.value = myCalendar.time
         }
 
+        //openFrag(Fragment4.newInstance(), R.id.place_holder)
+
     }// I dont want to do the first fragment into the second.... For my mind it so simple
-    fun callFragment2 (b: Boolean) {
-        if (b)
+
+    private fun openFrag (idFragment:Int) {
+        var x:Fragment? = null
+        when(idFragment) {
+            1 -> x = Fragment1.newInstance()
+            2 -> x = Fragment2.newInstance()
+            3 -> x = Fragment3.newInstance()
+            4 -> x = Fragment4.newInstance()
+        }
+        //if (x != null) {
             supportFragmentManager
                 .beginTransaction()
-                .addToBackStack(null) //added for looking what happens when will pressed "back"
-                .replace(R.id.place_holder,Fragment2.newInstance())
+                .addToBackStack(null)
+                .replace(R.id.place_holder, x!!)
                 .commit()
-    }
-    fun callFragment1 (b: Boolean) {
-        if (!b)
-            supportFragmentManager
-                .beginTransaction()
-                .addToBackStack(null) //added for looking what happens when will pressed "back"
-                .replace(R.id.place_holder,Fragment1.newInstance())
-                .commit()
-    }
-    private fun openFrag (idHolder: Int, f: Fragment) {
-        supportFragmentManager
-            .beginTransaction()
-            .addToBackStack(null)
-            .replace(idHolder, f)
-            .commit()
+        //}
+
     }
     /*
     Задание 3

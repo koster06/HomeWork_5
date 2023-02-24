@@ -22,8 +22,9 @@ class Fragment1 : Fragment() {
 
     lateinit var binding: Fragment1Binding //add binding in Fragment1
     private val shareModelString: DataShare by activityViewModels()
-    private val shareModelBoolean: DataShare by activityViewModels()
+    private val shareModelButton: DataShare by activityViewModels()
     private val shareModelDate: DataShare by activityViewModels()
+    private val shareModelBoolean: DataShare by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +42,7 @@ class Fragment1 : Fragment() {
         Log.d("test", "onViewCreated")
 
         binding.bCallFragment2.setOnClickListener {
-            shareModelBoolean.shareForActivity.value = true
+            shareModelButton.shareForActivity.value = 2
             shareModelString.shareForFragment2.value = binding.tvFragment1.text.toString()
         }
 

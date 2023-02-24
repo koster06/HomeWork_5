@@ -33,6 +33,6 @@
             android:id="@+id/bCallFragment1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="To Frag1" />
+            android:text="To Frag 3" />
     </LinearLayout>
 </FrameLayout>
