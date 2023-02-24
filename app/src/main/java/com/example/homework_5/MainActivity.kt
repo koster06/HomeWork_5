@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
             shareModel.shareForFragment1Date.value = myCalendar.time
         }
 
-    }
+    }// I dont want to do the first fragment into the second.... For my mind it so simple
     fun callFragment2 (b: Boolean) {
         if (b)
             supportFragmentManager
@@ -70,9 +70,9 @@ class MainActivity : AppCompatActivity() {
     /*
     Задание 3
 Создать второй фрагмент  на Java -- может быть, но не сегодня, не в мою смену!
-В первом фрагменте добавить FrameLayout -- он и так там был... Что имеется ввиду?
-Второй фрагмент вызвать из первого фрагмента
-Передать во второй фрагмент параметры, переданные из активити
+В первом фрагменте добавить FrameLayout -- он и так там был... ааааа, делать фрагмент внутри фрагмета!
+Второй фрагмент вызвать из первого фрагмента ++
+Передать во второй фрагмент параметры, переданные из активити ++
      */
 
     override fun onStart() {

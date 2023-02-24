@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import java.util.*
 
-open class DataShare: ViewModel() {
+open class DataShare: ViewModel() { // I choose this variant for communicate between frags cos it more comfortable for me, and I used it later
 
     val shareForFragment1: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
