@@ -13,21 +13,24 @@ class MainActivity : AppCompatActivity() {
     val myCalendar = Calendar.getInstance()
     lateinit var binding: ActivityMainBinding
     private val shareModel: DataShare by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         Log.d("test", "Activity: onCreate")
 
-        supportFragmentManager
-            .beginTransaction()
-            .addToBackStack(null) //added for looking what happens when will pressed "back"
-            .replace(R.id.place_holder,Fragment1.newInstance())
-            .commit()
+        openFrag(1)
 
         shareModel.shareForActivity.observe(this, {
             openFrag(it)
         })
+
+        binding.bRight.setOnClickListener { // button for random changing Fragments
+                val start = 1                       // I didn't want to lumber up the screen, there is a mess
+                val end = 4
+                openFrag( rand(start, end))
+        }
 
         binding.bSender.setOnClickListener {
             shareModel.shareForFragment1.value = binding.etSenderText.text.toString()
@@ -45,9 +48,12 @@ class MainActivity : AppCompatActivity() {
             shareModel.shareForFragment1Date.value = myCalendar.time
         }
 
-        //openFrag(Fragment4.newInstance(), R.id.place_holder)
+    }// I didn't want to do the first fragment into the second.... For my mind it so simple
 
-    }// I dont want to do the first fragment into the second.... For my mind it so simple
+    fun rand(start: Int, end: Int): Int {
+        require(start <= end) { "Illegal Argument" }
+        return (start..end).random()
+    }
 
     private fun openFrag (idFragment:Int) {
         var x:Fragment? = null
@@ -57,15 +63,13 @@ class MainActivity : AppCompatActivity() {
             3 -> x = Fragment3.newInstance()
             4 -> x = Fragment4.newInstance()
         }
-        //if (x != null) {
             supportFragmentManager
                 .beginTransaction()
                 .addToBackStack(null)
                 .replace(R.id.place_holder, x!!)
                 .commit()
-        //}
-
     }
+
     /*
     Задание 3
 Создать второй фрагмент  на Java -- может быть, но не сегодня, не в мою смену!
@@ -79,8 +83,8 @@ class MainActivity : AppCompatActivity() {
 Реализовать механизм смены фрагментов в активити,
 по нажатию на разные кнопки активити
 (для каждого фрагмента своя кнопка)
-В центре каждого фрагмента разместить любую картинку
-и изменить фон самого фрагмента
+В центре каждого фрагмента разместить любую картинку ++
+и изменить фон самого фрагмента ++
      */
 
     override fun onStart() {
