@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import com.example.homework_5.databinding.ActivityMainBinding
 import com.example.homework_5.databinding.Fragment2Binding
@@ -67,12 +68,28 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.place_holder,Fragment1.newInstance())
                 .commit()
     }
+    private fun openFrag (idHolder: Int, f: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .addToBackStack(null)
+            .replace(idHolder, f)
+            .commit()
+    }
     /*
     Задание 3
 Создать второй фрагмент  на Java -- может быть, но не сегодня, не в мою смену!
 В первом фрагменте добавить FrameLayout -- он и так там был... ааааа, делать фрагмент внутри фрагмета!
 Второй фрагмент вызвать из первого фрагмента ++
 Передать во второй фрагмент параметры, переданные из активити ++
+     */
+    /*
+    Задание 4
+Создать еще минимум 2 фрагмента
+Реализовать механизм смены фрагментов в активити,
+по нажатию на разные кнопки активити
+(для каждого фрагмента своя кнопка)
+В центре каждого фрагмента разместить любую картинку
+и изменить фон самого фрагмента
      */
 
     override fun onStart() {
