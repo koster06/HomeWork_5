@@ -9,6 +9,7 @@ open class DataShare: ViewModel() {
     val shareForFragment1: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
+    //val shareForFragment1: MutableLiveData<CharSequence> = MutableLiveData()  -- the same
 
     val shareForFragment1Date: MutableLiveData<Date> by lazy {
         MutableLiveData<Date>()

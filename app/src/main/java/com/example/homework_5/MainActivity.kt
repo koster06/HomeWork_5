@@ -6,9 +6,11 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.lifecycle.ViewModel
 import com.example.homework_5.databinding.ActivityMainBinding
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+    val myCalendar = Calendar.getInstance()
     lateinit var binding: ActivityMainBinding
     private val shareModel: DataShare by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.bSender.setOnClickListener {
             shareModel.shareForFragment1.value = binding.etSenderText.text.toString()
+            binding.etSenderText.text.clear()
         }
 
         binding.radioButton1.setOnClickListener {
@@ -35,6 +38,10 @@ class MainActivity : AppCompatActivity() {
         }
         binding.radioButton2.setOnClickListener {
             shareModel.shareForFragment1Boolean.value = false
+        }
+
+        binding.tvDateSender.setOnClickListener {
+            shareModel.shareForFragment1Date.value = myCalendar.time
         }
 
     }

@@ -22,6 +22,7 @@ class Fragment1 : Fragment() {
     lateinit var binding: Fragment1Binding //add binding in Fragment1
     private val shareModelString: DataShare by activityViewModels()
     private val shareModelBoolean: DataShare by activityViewModels()
+    private val shareModelDate: DataShare by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +47,9 @@ class Fragment1 : Fragment() {
             binding.tvFragment1.text = it.toString()
         })
 
-
+        shareModelDate.shareForFragment1Date.observe(activity as LifecycleOwner, {
+            binding.tvFragment1.text = it.toString()
+        })
 
     }
 
