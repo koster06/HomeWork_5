@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.lifecycle.ViewModel
 import com.example.homework_5.databinding.ActivityMainBinding
+import com.example.homework_5.databinding.Fragment2Binding
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -24,9 +25,14 @@ class MainActivity : AppCompatActivity() {
             .addToBackStack(null) //added for looking what happens when will pressed "back"
             .replace(R.id.place_holder,Fragment1.newInstance())
             .commit()
-//        shareModel.shareForFragment1.observe(this, {
-//            binding.textView.text = it
-//        })
+
+        shareModel.shareForActivity.observe(this, {
+            callFragment2(it)
+        })
+
+        shareModel.shareForActivity.observe(this, {
+            callFragment1(it)
+        })
 
         binding.bSender.setOnClickListener {
             shareModel.shareForFragment1.value = binding.etSenderText.text.toString()
@@ -45,6 +51,29 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+    fun callFragment2 (b: Boolean) {
+        if (b)
+            supportFragmentManager
+                .beginTransaction()
+                .addToBackStack(null) //added for looking what happens when will pressed "back"
+                .replace(R.id.place_holder,Fragment2.newInstance())
+                .commit()
+    }
+    fun callFragment1 (b: Boolean) {
+        if (!b)
+            supportFragmentManager
+                .beginTransaction()
+                .addToBackStack(null) //added for looking what happens when will pressed "back"
+                .replace(R.id.place_holder,Fragment1.newInstance())
+                .commit()
+    }
+    /*
+    Задание 3
+Создать второй фрагмент  на Java -- может быть, но не сегодня, не в мою смену!
+В первом фрагменте добавить FrameLayout -- он и так там был... Что имеется ввиду?
+Второй фрагмент вызвать из первого фрагмента
+Передать во второй фрагмент параметры, переданные из активити
+     */
 
     override fun onStart() {
         super.onStart()

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import com.example.homework_5.databinding.Fragment1Binding
+import com.example.homework_5.databinding.Fragment2Binding
 
 
 class Fragment1 : Fragment() {
@@ -38,6 +39,10 @@ class Fragment1 : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("test", "onViewCreated")
+
+        binding.bCallFragment2.setOnClickListener {
+            shareModelBoolean.shareForActivity.value = true
+        }
 
         shareModelString.shareForFragment1.observe(activity as LifecycleOwner, {
             binding.tvFragment1.text = it
