@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#A4BBCD"
+    tools:context=".Fragment22">
+
+        <!-- Text View for showing Fragment2 text -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="Fragment 2"
+            android:textColor="@color/black"
+            android:textSize="40sp" />
+
+        <!-- Frame Layout which will replaced by data from Fragment1 -->
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/displayMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="300dp"
+                    android:gravity="center"
+                    android:text="Text"
+                    android:textColor="@color/black"
+                    android:textSize="30sp" />
+
+        </FrameLayout>
+
+</RelativeLayout>

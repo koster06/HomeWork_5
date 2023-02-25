@@ -1,5 +1,6 @@
 package com.example.homework_5
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -38,10 +39,14 @@ class MainActivity : AppCompatActivity() {
         binding.button7.setOnClickListener {
             openFrag(4)
         }
+        binding.button8.setOnClickListener {
+            val intent = Intent(this@MainActivity, MainActivity2::class.java)
+            startActivity(intent)
+        }
 
 
 //        binding.bRight.setOnClickListener { // button for random changing Fragments
-//                val start = 1                       // I didn't want to lumber up the screen, there is a mess
+//                val start = 1               // I didn't want to lumber up the screen, there is a mess
 //                val end = 4
 //                openFrag( rand(start, end))
 //        }
@@ -64,10 +69,10 @@ class MainActivity : AppCompatActivity() {
 
     }// I didn't want to do the first fragment into the second.... For my mind it so simple
 
-    fun rand(start: Int, end: Int): Int {
-        require(start <= end) { "Illegal Argument" }
-        return (start..end).random()
-    }
+//    fun rand(start: Int, end: Int): Int {
+//        require(start <= end) { "Illegal Argument" }
+//        return (start..end).random()
+//    }
 
     private fun openFrag (idFragment:Int) {
         var x:Fragment? = null
@@ -94,11 +99,32 @@ class MainActivity : AppCompatActivity() {
     /*
     Задание 4
 Создать еще минимум 2 фрагмента
-Реализовать механизм смены фрагментов в активити,
+Реализовать механизм смены фрагментов в активити, ++
 по нажатию на разные кнопки активити
-(для каждого фрагмента своя кнопка)
+(для каждого фрагмента своя кнопка) ++
 В центре каждого фрагмента разместить любую картинку ++
 и изменить фон самого фрагмента ++
+     */
+    /*
+    Задание 5
+Изучить способы передачи данных между фрагментами
+Реализовать минимум 2 способами следующее задание
+(по желанию можно больше)
+В идеале один из способов реализовать на Java
+
+Задание 6
+
+Создать новую активити на Java
+Реализовать добавление 2 разных фрагментом в нее (фрагменты располагаются
+вертикально друг за другом)
+Добавить горизонтальную разметку к активити
+(фрагменты располагаются горизонтально)
+Реализовать следующую логику:
+На первом фрагменте ввести текст в editText
+При нажатии на кнопку, введенный текст должен
+отобразиться во втором фрагменте
+Реализовать логику сохранения состояния
+при смене ориентации телефона
      */
 
     override fun onStart() {
