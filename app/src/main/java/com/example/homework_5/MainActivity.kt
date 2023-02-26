@@ -27,6 +27,9 @@ class MainActivity : AppCompatActivity() {
             openFrag(it)
         })
 
+        val intent = Intent(this@MainActivity, MainActivity2::class.java)
+        startActivity(intent)
+
         binding.button4.setOnClickListener {
             openFrag(1)
         }
