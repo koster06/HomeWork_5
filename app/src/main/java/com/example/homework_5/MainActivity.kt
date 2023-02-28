@@ -13,7 +13,21 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
+
     lateinit var binding: ActivityMainBinding
+
+    private val imageIdList = listOf ( //и заполнения xml разметки recyclerView
+        R.drawable.bird1,
+        R.drawable.bird2,
+        R.drawable.bird3,
+        R.drawable.bird4,
+        R.drawable.bird5,
+        R.drawable.bird6,
+        R.drawable.bird7,
+        R.drawable.bird8,
+        R.drawable.bird9
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -46,7 +60,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    //------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------
 
 
     fun View.hideKeyboard() {
@@ -75,6 +89,8 @@ class MainActivity : AppCompatActivity() {
         binding.etDate.setText((simpleDF.format(myCalendar.time)))
     }
 }
+
+//--------------------------------------------------------------------------------------------------
 
 /*
 Задание 5.1
