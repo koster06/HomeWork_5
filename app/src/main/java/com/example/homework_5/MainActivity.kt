@@ -1,12 +1,43 @@
 package com.example.homework_5
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import com.example.homework_5.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+
+
+    }
+    fun View.hideKeyboard() {
+        val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(windowToken, 0)
+    }
+    private val textWatcher: TextWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            // получаею текст со всех полей
+            val nameFilled = binding.editTextTextPersonName.text.toString()
+            val surnameFilled = binding.editTextTextPersonName2.text.toString()
+            val phoneFilled = binding.editTextPhone.text.toString()
+            val ageFilled = binding.editTextNumber.text.toString()
+            val birthday = binding.tvBirthday.text.toString()
+
+            // проверяю пусты поля или нет
+            binding.button.setEnabled(!nameFilled.isEmpty() && !surnameFilled.isEmpty() && !phoneFilled.isEmpty() && !ageFilled.isEmpty())
+        }
+
+        override fun afterTextChanged(s: Editable) {}
     }
 }
 
@@ -20,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 В идеале реализовать дизайн систему со стилями, шрифтами, размерами элементов,
 также использовать элементы material design (https://m3.material.io/))
 Полученный список отобразить в виде списка RecyclerView снизу от полей.
-Предусмотреть логику обновления списка, при добавлении экрана
+Предусмотреть логику обновления списка, при добавлении экрана -------------------- какого экрана? куда добавлять?
 Добавить кнопку “удалить” к элементам списка.
 При нажатии на кнопку удалить элемент списка должен удалиться из RecyclerView.
 Добавить к каждому элементу разное изображение (из ресурсов).
