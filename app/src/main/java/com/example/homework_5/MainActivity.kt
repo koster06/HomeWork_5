@@ -1,5 +1,6 @@
 package com.example.homework_5
 
+import android.app.DatePickerDialog
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,6 +9,8 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.example.homework_5.databinding.ActivityMainBinding
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -16,9 +19,36 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val myCalendar = Calendar.getInstance()
+        val datePicker = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+            myCalendar.set(Calendar.YEAR, year)
+            myCalendar.set(Calendar.MONTH, month)
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            writeLabel(myCalendar)
+        }
 
+        binding.etDate.setOnClickListener{
+            DatePickerDialog(this, datePicker, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show()
+        }
+
+        with(binding) {
+            etDate.addTextChangedListener(textWatcher)
+            editTextTextPersonName.addTextChangedListener(textWatcher)
+            editTextTextPersonName2.addTextChangedListener(textWatcher)
+            editTextPhone.addTextChangedListener(textWatcher)
+            editTextNumber.addTextChangedListener(textWatcher)
+        }
+
+        binding.button.setOnClickListener {
+
+        }
 
     }
+
+
+    //------------------------------------------------------------------------------
+
+
     fun View.hideKeyboard() {
         val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(windowToken, 0)
@@ -31,13 +61,18 @@ class MainActivity : AppCompatActivity() {
             val surnameFilled = binding.editTextTextPersonName2.text.toString()
             val phoneFilled = binding.editTextPhone.text.toString()
             val ageFilled = binding.editTextNumber.text.toString()
-            val birthday = binding.tvBirthday.text.toString()
+            val birthday = binding.etDate.text.toString()
 
             // проверяю пусты поля или нет
-            binding.button.setEnabled(!nameFilled.isEmpty() && !surnameFilled.isEmpty() && !phoneFilled.isEmpty() && !ageFilled.isEmpty())
+            binding.button.setEnabled(!nameFilled.isEmpty() && !surnameFilled.isEmpty() && !phoneFilled.isEmpty() && !ageFilled.isEmpty() && !birthday.isEmpty())
         }
 
         override fun afterTextChanged(s: Editable) {}
+    }
+    private fun writeLabel(myCalendar: Calendar) {
+        val myFormat = "dd-MMMM-yyyy"
+        val simpleDF = SimpleDateFormat(myFormat)
+        binding.etDate.setText((simpleDF.format(myCalendar.time)))
     }
 }
 
