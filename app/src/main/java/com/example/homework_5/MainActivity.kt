@@ -6,8 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.homework_5.databinding.ActivityMainBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -15,6 +17,7 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
+    lateinit var adapter: UserAdapter
 
     private val imageIdList = listOf ( //и заполнения xml разметки recyclerView
         R.drawable.bird1,
@@ -27,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         R.drawable.bird8,
         R.drawable.bird9
     )
+    private var index = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,10 +57,15 @@ class MainActivity : AppCompatActivity() {
             editTextNumber.addTextChangedListener(textWatcher)
         }
 
-        binding.button.setOnClickListener {
-
-        }
-
+        adapter = UserAdapter(object : AdapterListener{
+            override fun removeUser(user: User) {
+                val indexToDelete = adapter.userList.indexOfFirst { it.id == user.id }
+                Log.d("test", "Into del: $indexToDelete")
+                adapter.userList.removeAt(indexToDelete)
+                adapter.notifyDataSetChanged()
+            }
+        })
+        init()
     }
 
 
@@ -78,7 +87,11 @@ class MainActivity : AppCompatActivity() {
             val birthday = binding.etDate.text.toString()
 
             // проверяю пусты поля или нет
-            binding.button.setEnabled(!nameFilled.isEmpty() && !surnameFilled.isEmpty() && !phoneFilled.isEmpty() && !ageFilled.isEmpty() && !birthday.isEmpty())
+            binding.button.setEnabled(!nameFilled.isEmpty()
+                    && !surnameFilled.isEmpty()
+                    && !phoneFilled.isEmpty()
+                    && !ageFilled.isEmpty()
+                    && !birthday.isEmpty())
         }
 
         override fun afterTextChanged(s: Editable) {}
@@ -88,6 +101,32 @@ class MainActivity : AppCompatActivity() {
         val simpleDF = SimpleDateFormat(myFormat)
         binding.etDate.setText((simpleDF.format(myCalendar.time)))
     }
+
+    fun init() {
+        binding.apply {
+            recyclerConteiner.layoutManager = GridLayoutManager(this@MainActivity, 1)
+            recyclerConteiner.adapter = adapter
+            button.setOnClickListener {
+                if (index>8) index = 0
+                val user = User(imageIdList[index],
+                    editTextTextPersonName.text.toString(),
+                    editTextTextPersonName2.text.toString(),
+                    editTextPhone.text.toString(),
+                    editTextNumber.text.toString(),
+                    etDate.text.toString()
+                    )
+                adapter.addUser(user)
+                index++
+                it.hideKeyboard()
+                editTextTextPersonName.text = null
+                editTextTextPersonName2.text = null
+                editTextPhone.text = null
+                editTextNumber.text = null
+                etDate.text = null
+            }
+        }
+    }
+
 }
 
 //--------------------------------------------------------------------------------------------------

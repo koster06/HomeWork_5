@@ -5,7 +5,7 @@ data class User( //data class for creating User instance
     val id:Int,
     val name:String,
     val secName: String,
-    val phone: Long,
-    val age: Int,
+    val phone: String,
+    val age: String,
     val birthday:String
     )

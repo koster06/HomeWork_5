@@ -22,7 +22,7 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
             tvPhone.text = user.phone.toString()
             tvAge.text = user.age.toString()
             tvBirthday.text = user.birthday
-            bRemove.tag = user//добавил таг, чтоб адаптер знал номер холдера для вызова нажатия (иначе: -1)
+            bRemove.tag = user//добавил тэг, чтоб адаптер знал номер холдера для вызова нажатия (иначе: -1)
         }                       // его можно добавлять для всего холдера, текста и прочего, чтоб по нажатию
                                // OnClickListener посылал адаптеру номер вьюхи (иначе: -1)
 
@@ -44,7 +44,7 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
     }
 
     override fun onClick(v: View) {
-        val user = v.tag as User  // здесь нам этот таг и нужен! Я заколебался разбираться в ошибках!!!!!
+        val user = v.tag as User  // здесь нам этот тэг и нужен!
         Log.d("test", "Нажали на: ${user.id}")
         when (v.id) {
             R.id.bRemove -> {
@@ -56,11 +56,11 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
         }
     }
 
-    fun addBird(user: User) {
+    fun addUser(user: User) {
         userList.add(user)
         notifyDataSetChanged()//notifyItemInserted(), notifyItemRemoved(), notifyItemChanged()
         // - методы, отслеживающие добавление, удаление или изменение позиции одного элемента
-        //находятся в RecyclerView.Adapter
+        // находятся в RecyclerView.Adapter
     }
 
 }
