@@ -1,0 +1,104 @@
+package com.example.homework_5
+
+import android.os.Bundle
+import android.util.Log
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LifecycleOwner
+import com.example.homework_5.databinding.Fragment1Binding
+import com.example.homework_5.databinding.Fragment2Binding
+
+
+class Fragment1 : Fragment() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        Log.d("test", "onCreate")
+    }
+
+    lateinit var binding: Fragment1Binding //add binding in Fragment1
+    private val shareModelString: DataShare by activityViewModels()
+    private val shareModelButton: DataShare by activityViewModels()
+    private val shareModelDate: DataShare by activityViewModels()
+    private val shareModelBoolean: DataShare by activityViewModels()
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        Log.d("test", "onCreateView")
+
+        binding = Fragment1Binding.inflate(inflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d("test", "onViewCreated")
+
+        binding.bCallFragment2.setOnClickListener {
+            shareModelButton.shareForActivity.value = 2
+            shareModelString.shareForFragment2.value = binding.tvFragment1.text.toString()
+        }
+
+        shareModelString.shareForFragment1.observe(activity as LifecycleOwner, {
+            binding.tvFragment1.text = it
+        })
+
+        shareModelBoolean.shareForFragment1Boolean.observe(activity as LifecycleOwner, {
+            binding.tvFragment1.text = it.toString()
+        })
+
+        shareModelDate.shareForFragment1Date.observe(activity as LifecycleOwner, {
+            binding.tvFragment1.text = it.toString()
+        })
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        Log.d("test", "onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        Log.d("test", "onResume")
+    }
+
+    override fun onStop() {
+        Log.d("test", "onStop")
+
+        super.onStop()
+    }
+
+    override fun onDestroyView() {
+        Log.d("test", "onDestroyView")
+
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        Log.d("test", "onDestroy")
+
+        super.onDestroy()
+    }
+
+    override fun onDetach() {
+        Log.d("test", "onDetach")
+
+        super.onDetach()
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = Fragment1()
+    }
+
+}

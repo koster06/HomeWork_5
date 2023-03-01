@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="#79E6DC"
+    tools:context=".Fragment3">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout style="@style/my_layout">
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="match_parent"
+            android:layout_height="271dp"
+            android:src="@drawable/bird4" />
+
+        <Button
+            android:id="@+id/bToFrag4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="To fragment 4" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Fragment 3"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+</FrameLayout>
