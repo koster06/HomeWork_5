@@ -8,4 +8,4 @@ data class User( //data class for creating User instance
     val phone: String,
     val age: String,
     val birthday:String
-    )
+    ) : java.io.Serializable

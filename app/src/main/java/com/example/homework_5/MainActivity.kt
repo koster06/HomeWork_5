@@ -2,6 +2,7 @@ package com.example.homework_5
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -9,6 +10,8 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.homework_5.databinding.ActivityMainBinding
 import java.text.SimpleDateFormat
@@ -16,9 +19,9 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var userToNext: User
     lateinit var binding: ActivityMainBinding
     lateinit var adapter: UserAdapter
-
     private val imageIdList = listOf ( //и заполнения xml разметки recyclerView
         R.drawable.bird1,
         R.drawable.bird2,
@@ -45,6 +48,7 @@ class MainActivity : AppCompatActivity() {
             writeLabel(myCalendar)
         }
 
+
         binding.etDate.setOnClickListener{
             DatePickerDialog(this, datePicker, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show()
         }
@@ -63,6 +67,12 @@ class MainActivity : AppCompatActivity() {
                 Log.d("test", "Into del: $indexToDelete")
                 adapter.userList.removeAt(indexToDelete)
                 adapter.notifyDataSetChanged()
+            }
+
+            override fun toNextView(user: User) {
+                val index = adapter.userList.indexOfFirst { it.id == user.id }
+                Log.d("test", "Into next view")
+                userToNext = adapter.userList.get(index)
             }
         })
         init()
@@ -135,7 +145,7 @@ class MainActivity : AppCompatActivity() {
 
 /*
 Задание 5.2
-Добавить кнопку “Next Screen”  ---
+Добавить кнопку “Next Screen”  --- куда добавить кнопку?
 При нажатии на кнопку перейти на следующий экран и передать в него весь список (изучите как передавать объекты )
 Отобразить полученный список в виде CardView
 Добавьте возможность просмотра списка в виде таблицы и линейного списка  (на оснвове GridLayoutManager LinearLayoutManager).
