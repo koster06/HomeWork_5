@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     )
     private var index = 0
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -62,8 +63,8 @@ class MainActivity : AppCompatActivity() {
         init()
     }
 
-    // functions
-    //----------------------------------------------------------------------------------------------
+// functions
+//--------------------------------------------------------------------------------------------------
 
 
     fun View.hideKeyboard() {
@@ -82,11 +83,18 @@ class MainActivity : AppCompatActivity() {
             val birthday = binding.etDate.text.toString()
 
             // проверяю пусты поля или нет
-            binding.button.setEnabled(!nameFilled.isEmpty()
-                    && !surnameFilled.isEmpty()
-                    && !phoneFilled.isEmpty()
-                    && !ageFilled.isEmpty()
-                    && !birthday.isEmpty())
+            with(binding){
+                button.setEnabled(!nameFilled.isEmpty()
+                        && !surnameFilled.isEmpty()
+                        && !phoneFilled.isEmpty()
+                        && !ageFilled.isEmpty()
+                        && !birthday.isEmpty())
+                button2.setEnabled(!nameFilled.isEmpty()
+                        && !surnameFilled.isEmpty()
+                        && !phoneFilled.isEmpty()
+                        && !ageFilled.isEmpty()
+                        && !birthday.isEmpty())
+            }
         }
 
         override fun afterTextChanged(s: Editable) {}
@@ -119,6 +127,18 @@ class MainActivity : AppCompatActivity() {
                 editTextPhone.text = null
                 editTextNumber.text = null
                 etDate.text = null
+            }
+            button2.setOnClickListener { v ->
+                val user = User(imageIdList[index],
+                    editTextTextPersonName.text.toString(),
+                    editTextTextPersonName2.text.toString(),
+                    editTextPhone.text.toString(),
+                    editTextNumber.text.toString(),
+                    etDate.text.toString()
+                )
+                val intent = Intent(v.context, MainActivity2::class.java)
+                intent.putExtra("user", user)
+                v.context.startActivity(intent)
             }
         }
     }

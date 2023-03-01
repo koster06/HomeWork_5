@@ -10,7 +10,7 @@ import com.example.homework_5.databinding.ActivityMain2Binding
 class MainActivity2 : AppCompatActivity() {
 
     lateinit var binding: ActivityMain2Binding
-    //private var userIntent: ActivityResultLauncher<Intent>? = null
+//    private var userIntent: ActivityResultLauncher<Intent>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMain2Binding.inflate(layoutInflater)
