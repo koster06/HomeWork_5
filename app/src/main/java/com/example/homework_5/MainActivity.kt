@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.homework_5.databinding.ActivityMainBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -108,7 +109,7 @@ class MainActivity : AppCompatActivity() {
 
     fun init() {
         binding.apply {
-            recyclerConteiner.layoutManager = GridLayoutManager(this@MainActivity, 1)
+            recyclerConteiner.layoutManager = GridLayoutManager(this@MainActivity, 1) // изменение количества столбцов в ресайклере
             recyclerConteiner.adapter = adapter
             button.setOnClickListener {
                 if (index>8) index = 0
@@ -152,6 +153,6 @@ class MainActivity : AppCompatActivity() {
 Добавить кнопку “Next Screen”  --- куда добавить кнопку?
 При нажатии на кнопку перейти на следующий экран и передать в него весь список (изучите как передавать объекты )
 Отобразить полученный список в виде CardView
-Добавьте возможность просмотра списка в виде таблицы и линейного списка  (на оснвове GridLayoutManager LinearLayoutManager).
+Добавьте возможность просмотра списка в виде таблицы и линейного списка  (на оснвове GridLayoutManager LinearLayoutManager).---- реализовано изначально!!!
 Используйте библиотеку Palette для определения фона каждого элемента
  */
