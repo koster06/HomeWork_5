@@ -19,9 +19,8 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var userToNext: User
     lateinit var binding: ActivityMainBinding
-    lateinit var adapter: UserAdapter
+    val adapter: UserAdapter = UserAdapter()
     private val imageIdList = listOf ( //и заполнения xml разметки recyclerView
         R.drawable.bird1,
         R.drawable.bird2,
@@ -48,7 +47,6 @@ class MainActivity : AppCompatActivity() {
             writeLabel(myCalendar)
         }
 
-
         binding.etDate.setOnClickListener{
             DatePickerDialog(this, datePicker, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show()
         }
@@ -61,20 +59,6 @@ class MainActivity : AppCompatActivity() {
             editTextNumber.addTextChangedListener(textWatcher)
         }
 
-        adapter = UserAdapter(object : AdapterListener{
-            override fun removeUser(user: User) {
-                val indexToDelete = adapter.userList.indexOfFirst { it.id == user.id }
-                Log.d("test", "Into del: $indexToDelete")
-                adapter.userList.removeAt(indexToDelete)
-                adapter.notifyDataSetChanged()
-            }
-
-            override fun toNextView(user: User) {
-                val index = adapter.userList.indexOfFirst { it.id == user.id }
-                Log.d("test", "Into next view")
-                userToNext = adapter.userList.get(index)
-            }
-        })
         init()
     }
 

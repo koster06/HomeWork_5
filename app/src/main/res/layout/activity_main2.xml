@@ -24,37 +24,38 @@
             android:background="#FDEDD6"
             android:orientation="vertical">
 
-            <View
-                android:id="@+id/view"
-                android:layout_width="wrap_content"
-                android:layout_height="232dp" />
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="260dp"
+                app:srcCompat="@drawable/bird1" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/textName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TextView" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/textName2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TextView" />
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/textPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TextView" />
 
             <TextView
-                android:id="@+id/textView6"
+                android:id="@+id/textAge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TextView" />
 
             <TextView
-                android:id="@+id/textView7"
+                android:id="@+id/textBirthday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TextView" />
