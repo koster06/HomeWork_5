@@ -53,10 +53,13 @@ class MainActivity : AppCompatActivity() {
             DatePickerDialog(this, datePicker, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show()
         }
 
+        binding.tvSide.text = "Bird"
+        binding.ivSide.setImageResource(index)
+
         with(binding) {
             etDate.addTextChangedListener(textWatcher)
-            editTextTextPersonName.addTextChangedListener(textWatcher)
-            editTextTextPersonName2.addTextChangedListener(textWatcher)
+            editTextPersonName.addTextChangedListener(textWatcher)
+            editTextPersonName2.addTextChangedListener(textWatcher)
             editTextPhone.addTextChangedListener(textWatcher)
             editTextNumber.addTextChangedListener(textWatcher)
         }
@@ -77,8 +80,8 @@ class MainActivity : AppCompatActivity() {
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             // получаею текст со всех полей
-            val nameFilled = binding.editTextTextPersonName.text.toString()
-            val surnameFilled = binding.editTextTextPersonName2.text.toString()
+            val nameFilled = binding.editTextPersonName.text.toString()
+            val surnameFilled = binding.editTextPersonName2.text.toString()
             val phoneFilled = binding.editTextPhone.text.toString()
             val ageFilled = binding.editTextNumber.text.toString()
             val birthday = binding.etDate.text.toString()
@@ -91,6 +94,11 @@ class MainActivity : AppCompatActivity() {
                         && !ageFilled.isEmpty()
                         && !birthday.isEmpty())
                 button2.setEnabled(!nameFilled.isEmpty()
+                        && !surnameFilled.isEmpty()
+                        && !phoneFilled.isEmpty()
+                        && !ageFilled.isEmpty()
+                        && !birthday.isEmpty())
+                bSideToSecond.setEnabled(!nameFilled.isEmpty()
                         && !surnameFilled.isEmpty()
                         && !phoneFilled.isEmpty()
                         && !ageFilled.isEmpty()
@@ -114,8 +122,8 @@ class MainActivity : AppCompatActivity() {
             button.setOnClickListener {
                 if (index>8) index = 0
                 val user = User(imageIdList[index],
-                    editTextTextPersonName.text.toString(),
-                    editTextTextPersonName2.text.toString(),
+                    editTextPersonName.text.toString(),
+                    editTextPersonName2.text.toString(),
                     editTextPhone.text.toString(),
                     editTextNumber.text.toString(),
                     etDate.text.toString()
@@ -123,16 +131,16 @@ class MainActivity : AppCompatActivity() {
                 adapter.addUser(user)
                 index++
                 it.hideKeyboard()
-                editTextTextPersonName.text = null
-                editTextTextPersonName2.text = null
+                editTextPersonName.text = null
+                editTextPersonName2.text = null
                 editTextPhone.text = null
                 editTextNumber.text = null
                 etDate.text = null
             }
             button2.setOnClickListener { v ->
                 val user = User(imageIdList[index],
-                    editTextTextPersonName.text.toString(),
-                    editTextTextPersonName2.text.toString(),
+                    editTextPersonName.text.toString(),
+                    editTextPersonName2.text.toString(),
                     editTextPhone.text.toString(),
                     editTextNumber.text.toString(),
                     etDate.text.toString()
@@ -141,18 +149,27 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra("user", user)
                 v.context.startActivity(intent)
             }
+            bSideToSecond.setOnClickListener { v ->
+                    val user = User(imageIdList[index],
+                        editTextPersonName.text.toString(),
+                        editTextPersonName2.text.toString(),
+                        editTextPhone.text.toString(),
+                        editTextNumber.text.toString(),
+                        etDate.text.toString()
+                    )
+                    val intent = Intent(v.context, MainActivity2::class.java)
+                    intent.putExtra("user", user)
+                    v.context.startActivity(intent)
+            }
         }
     }
-
 }
 // DESCRIPTION
 //--------------------------------------------------------------------------------------------------
 
 /*
-Задание 5.2
-Добавить кнопку “Next Screen”  --- куда добавить кнопку? ++
-При нажатии на кнопку перейти на следующий экран и передать в него весь список (изучите как передавать объекты ) ++
-Отобразить полученный список в виде CardView ++
-Добавьте возможность просмотра списка в виде таблицы и линейного списка  (на оснвове GridLayoutManager LinearLayoutManager).---- реализовано изначально!!!
-Используйте библиотеку Palette для определения фона каждого элемента
- */
+Задание 6.3
+На одном из экранов реализуйте боковое меню. Пункты меню придумайте сами,
+при нажатии на пункт либо открывайте соответствующий экран или диалог покажите.
+Тут по вашему желанию.
+*/
