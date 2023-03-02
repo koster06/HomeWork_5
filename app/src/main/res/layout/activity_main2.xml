@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cs_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity2">
@@ -20,6 +21,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
+            android:id="@+id/linerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#FDEDD6"
@@ -29,28 +31,13 @@
                 android:id="@+id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="287dp"
-                app:srcCompat="@drawable/bird1" />
+                tools:srcCompat="@drawable/bird1" />
 
             <TextView
-                android:id="@+id/textName"
+                android:id="@+id/textAll"
                 style="@style/my_text_style"
                 android:layout_height="wrap_content" />
 
-            <TextView
-                android:id="@+id/textName2"
-                style="@style/my_text_style" />
-
-            <TextView
-                android:id="@+id/textPhone"
-                style="@style/my_text_style" />
-
-            <TextView
-                android:id="@+id/textAge"
-                style="@style/my_text_style" />
-
-            <TextView
-                android:id="@+id/textBirthday"
-                style="@style/my_text_style" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
