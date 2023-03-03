@@ -41,8 +41,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.toolbar)
+
         val myCalendar = Calendar.getInstance()
-        val datePicker = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+        val datePicker = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
             myCalendar.set(Calendar.YEAR, year)
             myCalendar.set(Calendar.MONTH, month)
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
@@ -52,9 +54,6 @@ class MainActivity : AppCompatActivity() {
         binding.etDate.setOnClickListener{
             DatePickerDialog(this, datePicker, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show()
         }
-
-        binding.tvSide.text = "Bird"
-        binding.ivSide.setImageResource(index)
 
         with(binding) {
             etDate.addTextChangedListener(textWatcher)
@@ -94,11 +93,6 @@ class MainActivity : AppCompatActivity() {
                         && !ageFilled.isEmpty()
                         && !birthday.isEmpty())
                 button2.setEnabled(!nameFilled.isEmpty()
-                        && !surnameFilled.isEmpty()
-                        && !phoneFilled.isEmpty()
-                        && !ageFilled.isEmpty()
-                        && !birthday.isEmpty())
-                bSideToSecond.setEnabled(!nameFilled.isEmpty()
                         && !surnameFilled.isEmpty()
                         && !phoneFilled.isEmpty()
                         && !ageFilled.isEmpty()
@@ -148,18 +142,6 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(v.context, MainActivity2::class.java)
                 intent.putExtra("user", user)
                 v.context.startActivity(intent)
-            }
-            bSideToSecond.setOnClickListener { v ->
-                    val user = User(imageIdList[index],
-                        editTextPersonName.text.toString(),
-                        editTextPersonName2.text.toString(),
-                        editTextPhone.text.toString(),
-                        editTextNumber.text.toString(),
-                        etDate.text.toString()
-                    )
-                    val intent = Intent(v.context, MainActivity2::class.java)
-                    intent.putExtra("user", user)
-                    v.context.startActivity(intent)
             }
         }
     }
