@@ -8,17 +8,22 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.homework_5.databinding.ActivityMainBinding
+import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     lateinit var binding: ActivityMainBinding
     val adapter: UserAdapter = UserAdapter()
@@ -42,6 +47,22 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
+
+        binding.navView.setNavigationItemSelectedListener(this)
+
+        val toggle = ActionBarDrawerToggle(this, binding.drawerLayout,
+            binding.toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close)
+
+        binding.drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, MessageFragment.newInstance())
+            binding.navView.setCheckedItem(R.id.nav_message)
+        }
 
         val myCalendar = Calendar.getInstance()
         val datePicker = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
@@ -69,8 +90,15 @@ class MainActivity : AppCompatActivity() {
 // functions
 //--------------------------------------------------------------------------------------------------
 
+    override fun onBackPressed() {
+        with(binding) {
+            if (drawerLayout.isDrawerOpen(GravityCompat.START))
+                drawerLayout.closeDrawer(GravityCompat.START)
+            else super.onBackPressed()
+        }
+    }
 
-    fun View.hideKeyboard() {
+    private fun View.hideKeyboard() {
         val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(windowToken, 0)
     }
@@ -144,6 +172,18 @@ class MainActivity : AppCompatActivity() {
                 v.context.startActivity(intent)
             }
         }
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.nav_message) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container, MessageFragment.newInstance())
+            .commit()
+        Toast.makeText(this, "To Message Fragment", Toast.LENGTH_SHORT).show()
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
+        }
+        return true
     }
 }
 // DESCRIPTION
