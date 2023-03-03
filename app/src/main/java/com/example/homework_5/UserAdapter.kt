@@ -15,7 +15,7 @@ class UserAdapter() : RecyclerView.Adapter<UserAdapter.UserHolder>() {
     var userList = mutableListOf<User>()
     class UserHolder(item: View) : RecyclerView.ViewHolder(item) {
         val binding = CardItemBinding.bind(item)
-        fun bind(user: User) = with(binding) {//метод будет связывать все элементы холдера с полями bird:Bird
+        fun bind(user: User) = with(binding) {
             imV.setImageResource(user.id)
             tvName.text = user.name
             tvSecond.text = user.secName
@@ -37,7 +37,7 @@ class UserAdapter() : RecyclerView.Adapter<UserAdapter.UserHolder>() {
         with(holder) {
             binding.bNextView.setOnClickListener { v ->
                 val intent = Intent(v.context, MainActivity2::class.java)
-                intent.putExtra("user", userList.get(position))
+                intent.putExtra("user", userList[position])
                 v.context.startActivity(intent)
             }
             binding.bRemove.setOnClickListener {
@@ -55,8 +55,6 @@ class UserAdapter() : RecyclerView.Adapter<UserAdapter.UserHolder>() {
 
     fun addUser(user: User) {
         userList.add(user)
-        notifyDataSetChanged()//notifyItemInserted(), notifyItemRemoved(), notifyItemChanged()
-                            // - методы, отслеживающие добавление, удаление или изменение позиции одного элемента
-                            // находятся в RecyclerView.Adapter
+        notifyDataSetChanged()
     }
 }

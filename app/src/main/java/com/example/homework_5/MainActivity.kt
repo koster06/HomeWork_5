@@ -26,7 +26,7 @@ import java.util.*
 class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     lateinit var binding: ActivityMainBinding
-    val adapter: UserAdapter = UserAdapter()
+    private val adapter: UserAdapter = UserAdapter()
     private val imageIdList = listOf ( //и заполнения xml разметки recyclerView
         R.drawable.bird1,
         R.drawable.bird2,
@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         binding.etDate.setText((simpleDF.format(myCalendar.time)))
     }
 
-    fun init() {
+    private fun init() {
         binding.apply {
             recyclerConteiner.layoutManager = GridLayoutManager(this@MainActivity, 1) // изменение количества столбцов в ресайклере
             recyclerConteiner.adapter = adapter
@@ -160,16 +160,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 etDate.text = null
             }
             button2.setOnClickListener { v ->
-                val user = User(imageIdList[index],
-                    editTextPersonName.text.toString(),
-                    editTextPersonName2.text.toString(),
-                    editTextPhone.text.toString(),
-                    editTextNumber.text.toString(),
-                    etDate.text.toString()
-                )
-                val intent = Intent(v.context, MainActivity2::class.java)
-                intent.putExtra("user", user)
-                v.context.startActivity(intent)
+
             }
         }
     }
