@@ -112,7 +112,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextNumber" />
 
-    <androidx.recyclerview.widget.RecyclerView
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button"
+            app:layout_constraintBottom_toTopOf="@+id/recycler_conteiner"
+            app:layout_constraintEnd_toStartOf="@+id/button2"
+            app:layout_constraintStart_toEndOf="@id/button" />
+
+        <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_conteiner"
         android:layout_width="0dp"
         android:layout_height="0dp"

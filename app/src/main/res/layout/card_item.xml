@@ -92,24 +92,12 @@
 
             <ImageView
                 android:id="@+id/imV"
-                android:layout_width="184dp"
-                android:layout_height="120dp"
+                android:layout_width="165dp"
+                android:layout_height="117dp"
                 android:layout_margin="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/bird1" />
-
-            <Button
-                android:id="@+id/bNextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="next view"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/bRemove"
-                app:layout_constraintTop_toBottomOf="@+id/imV" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

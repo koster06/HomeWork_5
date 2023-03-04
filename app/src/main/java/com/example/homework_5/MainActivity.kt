@@ -12,21 +12,22 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.homework_5.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     lateinit var binding: ActivityMainBinding
-    private val adapter: UserAdapter = UserAdapter()
+    var userList = kotlin.collections.ArrayList<UserNext>()
+    lateinit var userNext : UserNext
+    private val adapter = UserAdapter()
+    private val adapterNextView = UserNextAdapter()
     private val imageIdList = listOf ( //и заполнения xml разметки recyclerView
         R.drawable.bird1,
         R.drawable.bird2,
@@ -45,6 +46,8 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+//        val intent = Intent(this@MainActivity, MainActivity2::class.java)
+//        startActivity(intent)
 
         setSupportActionBar(binding.toolbar)
 
@@ -139,7 +142,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     private fun init() {
         binding.apply {
-            recyclerConteiner.layoutManager = GridLayoutManager(this@MainActivity, 1) // изменение количества столбцов в ресайклере
+            recyclerConteiner.layoutManager = GridLayoutManager(this@MainActivity, 1)
             recyclerConteiner.adapter = adapter
             button.setOnClickListener {
                 if (index>8) index = 0
@@ -150,6 +153,12 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                     editTextNumber.text.toString(),
                     etDate.text.toString()
                     )
+                val userNext = UserNext(
+                    imageIdList[index],
+                    editTextPersonName.text.toString(),
+                )
+                userList.add(userNext)
+                Log.d("test", "button Set: ${userList.size}")
                 adapter.addUser(user)
                 index++
                 it.hideKeyboard()
@@ -159,8 +168,10 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 editTextNumber.text = null
                 etDate.text = null
             }
-            button2.setOnClickListener { v ->
-
+            button2.setOnClickListener {
+                val intent = Intent(it.context, MainActivity2::class.java)
+                intent.putParcelableArrayListExtra("user", userList)
+                startActivity(intent)
             }
         }
     }
