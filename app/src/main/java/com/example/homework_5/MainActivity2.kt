@@ -29,10 +29,8 @@ class MainActivity2 : AppCompatActivity() {
         userList?.forEach {
             adapterNextView.addNextUser(it)
         }
-        val bm = (binding.imageView.drawable as BitmapDrawable).bitmap
-        setImageViewColor(bm)
-
-        }
+//        val bm = (binding.imageView.drawable as BitmapDrawable).bitmap
+//        setImageViewColor(bm)
 
 
 

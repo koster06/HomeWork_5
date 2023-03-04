@@ -25,9 +25,8 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     lateinit var binding: ActivityMainBinding
     var userList = kotlin.collections.ArrayList<UserNext>()
-    lateinit var userNext : UserNext
-    private val adapter = UserAdapter()
-    private val adapterNextView = UserNextAdapter()
+    lateinit var adapter : UserAdapter
+    //private val adapterNextView = UserNextAdapter()
     private val imageIdList = listOf ( //и заполнения xml разметки recyclerView
         R.drawable.bird1,
         R.drawable.bird2,
@@ -46,8 +45,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        val intent = Intent(this@MainActivity, MainActivity2::class.java)
-//        startActivity(intent)
+
 
         setSupportActionBar(binding.toolbar)
 
@@ -87,6 +85,14 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             editTextNumber.addTextChangedListener(textWatcher)
         }
 
+        adapter = UserAdapter(object : AdapterListener{
+            override fun removeUser(user: User) {      //this function more safe, cos I didn't have any issues with this
+                val indexToDelete = adapter.userList.indexOfFirst { it.id == user.id }
+                Log.d("test", "Into del: $indexToDelete")
+                adapter.userList.removeAt(indexToDelete)
+                adapter.notifyDataSetChanged()
+            }
+        })
         init()
     }
 
@@ -109,21 +115,13 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     private val textWatcher: TextWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            // получаею текст со всех полей
             val nameFilled = binding.editTextPersonName.text.toString()
             val surnameFilled = binding.editTextPersonName2.text.toString()
             val phoneFilled = binding.editTextPhone.text.toString()
             val ageFilled = binding.editTextNumber.text.toString()
             val birthday = binding.etDate.text.toString()
-
-            // проверяю пусты поля или нет
             with(binding){
                 button.setEnabled(!nameFilled.isEmpty()
-                        && !surnameFilled.isEmpty()
-                        && !phoneFilled.isEmpty()
-                        && !ageFilled.isEmpty()
-                        && !birthday.isEmpty())
-                button2.setEnabled(!nameFilled.isEmpty()
                         && !surnameFilled.isEmpty()
                         && !phoneFilled.isEmpty()
                         && !ageFilled.isEmpty()
@@ -157,8 +155,8 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                     imageIdList[index],
                     editTextPersonName.text.toString(),
                 )
-                userList.add(userNext)
-                Log.d("test", "button Set: ${userList.size}")
+                userList?.add(userNext)
+                Log.d("test", "Button1: ${userList.size}")
                 adapter.addUser(user)
                 index++
                 it.hideKeyboard()

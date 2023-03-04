@@ -8,9 +8,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.homework_5.databinding.CardItemBinding
 
-class UserAdapter() : RecyclerView.Adapter<UserAdapter.UserHolder>() {
+class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.Adapter<UserAdapter.UserHolder>(),
+    View.OnClickListener {
 
-    private var userList = mutableListOf<User>()
+    var userList = mutableListOf<User>()
     class UserHolder(item: View) : RecyclerView.ViewHolder(item) {
         val binding = CardItemBinding.bind(item)
         fun bind(user: User) = with(binding) {
@@ -20,7 +21,6 @@ class UserAdapter() : RecyclerView.Adapter<UserAdapter.UserHolder>() {
             tvPhone.text = user.phone
             tvAge.text = user.age
             tvBirthday.text = user.birthday
-            bNextView.tag = user
             bRemove.tag = user
         }
     }
@@ -28,29 +28,32 @@ class UserAdapter() : RecyclerView.Adapter<UserAdapter.UserHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = CardItemBinding.inflate(inflater,parent,false)
+        binding.bRemove.setOnClickListener(this)
         return UserHolder(binding.root)
     }
 
     override fun onBindViewHolder(holder: UserAdapter.UserHolder, position: Int) {
-        with(holder) {
-            binding.bNextView.setOnClickListener { v ->
-                val intent = Intent(v.context, MainActivity2::class.java)
-                v.context.startActivity(intent)
-            }
-            bind(userList[position])
-        }
+        holder.bind(userList[position])
     }
 
     override fun getItemCount(): Int {
         return userList.size
     }
 
+    override fun onClick(v: View) {
+        val user = v.tag as User
+        when (v.id) {
+            R.id.bRemove -> {
+                adapterListener.removeUser(user)
+            }
+            else -> {
+                //TODO something
+            }
+        }
+    }
 
     fun addUser(user: User) {
         userList.add(user)
         notifyDataSetChanged()
-        userList.forEach{
-            println(it.toString())
-        }
     }
 }
