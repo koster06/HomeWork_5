@@ -98,7 +98,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:enabled="false"
-        android:text="Set"
+        android:text="Save"
         app:layout_constraintBottom_toTopOf="@+id/recycler_conteiner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etDate" />

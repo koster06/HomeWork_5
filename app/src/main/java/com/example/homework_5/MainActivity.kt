@@ -12,22 +12,24 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.homework_5.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
+import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     lateinit var binding: ActivityMainBinding
-    var userList = kotlin.collections.ArrayList<UserNext>()
+    //var userList = kotlin.collections.ArrayList<UserNext>()
+    var userList = mutableListOf<User>()
     lateinit var adapter : UserAdapter
     //private val adapterNextView = UserNextAdapter()
-    private val imageIdList = listOf ( //и заполнения xml разметки recyclerView
+    private val imageIdList = listOf (
         R.drawable.bird1,
         R.drawable.bird2,
         R.drawable.bird3,
@@ -93,12 +95,81 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 adapter.notifyDataSetChanged()
             }
         })
+        binding.apply {
+            bindSaveButtonListener()
+        }
+        openFile2()
         init()
+
     }
 
 // functions
 //--------------------------------------------------------------------------------------------------
 
+//    private fun ActivityMainBinding.bindOpenButtonListener() {
+//        openButton.setOnClickListener {
+//            try {
+//                openFile1()
+//            } catch (e: Exception) {
+//                showError(R.string.cant_open_file)
+//            }
+//        }
+//    }
+
+    private fun ActivityMainBinding.bindSaveButtonListener() {
+        button.setOnClickListener {
+            try {
+                saveFile()
+            } catch (e: Exception) {
+                showError(R.string.cant_save_file)
+            }
+        }
+    }
+
+    // Open: example with wrappers
+//    private fun ActivityMainBinding.openFile1() {
+//        val file = File(filesDir, FILE_NAME)
+//        val inputStream = FileInputStream(file)
+//        val reader = InputStreamReader(inputStream)
+//        val bufferedReader = BufferedReader(reader)
+//        val data = bufferedReader.use {
+//            it.readLines().joinToString(separator = "\n")
+//        }
+//        .setText(data)
+//    }
+
+     //Open: example without wrappers
+    private fun openFile2() {
+        val file = File(filesDir, FILE_NAME)
+        val input = FileInputStream(file)
+        val data = ObjectInputStream(input)
+        val user =  data.readObject() as User
+        userList.add(user)
+    }
+
+    private fun ActivityMainBinding.saveFile() {
+        val file = File(filesDir, FILE_NAME)
+        val user = User(imageIdList[index],
+            editTextPersonName.text.toString(),
+            editTextPersonName2.text.toString(),
+            editTextPhone.text.toString(),
+            editTextNumber.text.toString(),
+            etDate.text.toString()
+        )
+        val output = FileOutputStream(file)
+            ObjectOutputStream(output).use {
+//            val bytes = user.toByteArray()
+            it.writeObject(user)
+        }
+    }
+
+    private fun showError(@StringRes res: Int) {
+        Toast.makeText(this, res, Toast.LENGTH_SHORT).show()
+    }
+
+    private companion object {
+        const val FILE_NAME = "my-file.txt"
+    }
     override fun onBackPressed() {
         with(binding) {
             if (drawerLayout.isDrawerOpen(GravityCompat.START))
@@ -155,8 +226,8 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                     imageIdList[index],
                     editTextPersonName.text.toString(),
                 )
-                userList?.add(userNext)
-                Log.d("test", "Button1: ${userList.size}")
+//                userList?.add(userNext)
+//                Log.d("test", "Button1: ${userList.size}")
                 adapter.addUser(user)
                 index++
                 it.hideKeyboard()
@@ -168,7 +239,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             }
             button2.setOnClickListener {
                 val intent = Intent(it.context, MainActivity2::class.java)
-                intent.putParcelableArrayListExtra("user", userList)
+                //intent.putParcelableArrayListExtra("user", userList)
                 startActivity(intent)
             }
         }
