@@ -196,8 +196,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 File(filesDir, FILE_NAME).createNewFile()
             }
             button.setOnClickListener {
-                if (index>8) index = 0
-                val user = User(imageIdList[index],
+                val user = User(imageIdList[choosingPicture(editTextNumber.text.toString())],
                     editTextPersonName.text.toString(),
                     editTextPersonName2.text.toString(),
                     editTextPhone.text.toString(),
@@ -207,7 +206,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 adapter.addUser(user)
                 userListApp.add(user)
                 saveFile()
-                index++
                 it.hideKeyboard()
                 editTextPersonName.text = null
                 editTextPersonName2.text = null
@@ -241,6 +239,21 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     private fun isFileEmpty(file: File): Boolean {
         return (file.length() == 0L)
+    }
+
+    private fun ActivityMainBinding.choosingPicture(age:String): Int {
+        return when(age.toInt()) {
+            in 0..9 -> 1
+            in 10 .. 19 -> 2
+            in 20 .. 29 -> 4
+            in 30 .. 39 -> 6
+            in 40 .. 49 -> 8
+            in 50 .. 59 -> 0
+            in 60 .. 79 -> 3
+            in 80 .. 89 -> 5
+            in 90 .. 99 -> 7
+            else -> {7}
+        }
     }
 
     private fun createSimpleDialog() {
