@@ -1,5 +1,6 @@
 package com.example.homework_5
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
@@ -92,8 +93,8 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             }
         })
 //--------------------------------------------------------------------------
-
-        init()
+        createSimpleDialog()
+        //init()
 
     }
 
@@ -242,40 +243,68 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         return (file.length() == 0L)
     }
 
-    // Open: example with wrappers
-//    private fun ActivityMainBinding.openFile1() {
-//        val file = File(filesDir, FILE_NAME)
-//        val inputStream = FileInputStream(file)
-//        val reader = InputStreamReader(inputStream)
-//        val bufferedReader = BufferedReader(reader)
-//        val data = bufferedReader.use {
-//            it.readLines().joinToString(separator = "\n")
-//        }
-//        .setText(data)
-//    }
-    //    private fun ActivityMainBinding.bindOpenButtonListener() {
-//        openButton.setOnClickListener {
-//            try {
-//                openFile1()
-//            } catch (e: Exception) {
-//                showError(R.string.cant_open_file)
-//            }
-//        }
-//    }
+    private fun createSimpleDialog() {
+        val builder = AlertDialog.Builder(this)
+                with(builder){
+        setTitle("Attention!")
+        setMessage("You have saved users. Do you want continue or delete list?")
+        setNegativeButton("Delete"){
+            dialogInterface, i -> File(filesDir, FILE_NAME).delete()
+            Log.i("test", "removing file")
+            init()
+        }
+        setPositiveButton("Continue") {
+            dialogInterface, i -> setCancelable(true)
+            Log.i("test", "continue with file")
+            init()
+        }
+                    show()
+                }
+    }
+
+    /*
+    Open: example with wrappers
+    private fun ActivityMainBinding.openFile1() {
+    val file = File(filesDir, FILE_NAME)
+    val inputStream = FileInputStream(file)
+    val reader = InputStreamReader(inputStream)
+    val bufferedReader = BufferedReader(reader)
+    val data = bufferedReader.use {
+    it.readLines().joinToString(separator = "\n")
+    }
+    .setText(data)
+    }
+    private fun ActivityMainBinding.bindOpenButtonListener() {
+    openButton.setOnClickListener {
+    try {
+    openFile1()
+    } catch (e: Exception) {
+    showError(R.string.cant_open_file)
+    }
+    }
+    }
+    */
 
 }
-// DESCRIPTION
-//--------------------------------------------------------------------------------------------------
+/*
+DESCRIPTION
+--------------------------------------------------------------------------------------------------
+*/
 
 /*
 Задание 7.1
 Доработайте проект из предыдущего ДЗ таким образом:
 1) При вводе данных в поле и нажатии на кнопку, запишите введенный данные в файл во внутренней памяти. ++
 2) Данные в список должны считываться из файла. ++
-3) По нажатию на кнопку “Удалить” элемент должен удаляться из файла и из recyclerView
-4) При открытии приложения реализовать логику проверки файла.
+3) По нажатию на кнопку “Удалить” элемент должен удаляться из файла и из recyclerView ++
+4) При открытии приложения реализовать логику проверки файла. ++
+а) Если файл существует, показать диалог с выбором для пользователя “оставить данные или очистить их”.
+б) Если пользователь выбирает “оставить файл”, пользователь должен видеть список с ранее введенными элементами.
+3) Если выбирает “очистить”, очистите файл.
+Задание 7.2
+При нажатии на “Next Screen”, запишите данные из файла в новый файл во внешней памяти.
+При  нажатии на “Next Screen” реализовать логику проверки файла во внешней памяти.
 Если файл существует, показать диалог с выбором для пользователя “оставить данные или очистить их”.
-Если пользователь выбирает “оставить файл”, пользователь должен видеть список с ранее введенными элементами.
+Если пользователь выбирает “оставить данные” новые данные должны быть записаны после существующих.
 Если выбирает “очистить”, очистите файл.
-
 */
