@@ -46,9 +46,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        val intent = Intent(this, MainActivity3::class.java)
-//        startActivity(intent)
-
 //----------------------------------------------------------------------
         setSupportActionBar(binding.toolbar)
         binding.navView.setNavigationItemSelectedListener(this)
@@ -87,17 +84,15 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             override fun removeUser(user: User) {
                 val indexToDelete = adapter.userList
                     .indexOfFirst { it.id == user.id }
+                userListApp.removeAt(indexToDelete)
+                Log.i("test", "we are remove: ${userListApp.size} ")
+                binding.saveFile()
                 adapter.userList.removeAt(indexToDelete)
                 adapter.notifyDataSetChanged()
             }
         })
 //--------------------------------------------------------------------------
-//        if (isFileExists(File(filesDir, FILE_NAME))) {
-//            binding.openFile2()
-//        } else {
-//
-//            Toast.makeText(this, "We made file", Toast.LENGTH_SHORT)
-//        }
+
         init()
 
     }
@@ -131,14 +126,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     private fun ActivityMainBinding.saveFile() {
         val file = File(filesDir, FILE_NAME)
-//        val user = User(imageIdList[index],
-//            editTextPersonName.text.toString(),
-//            editTextPersonName2.text.toString(),
-//            editTextPhone.text.toString(),
-//            editTextNumber.text.toString(),
-//            etDate.text.toString()
-//        )
-//        userListApp.add(user)
         Log.i("test" ,"saveFile ${userListApp.size}")
         val output = FileOutputStream(file)
             ObjectOutputStream(output).use {
@@ -216,12 +203,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                     editTextNumber.text.toString(),
                     etDate.text.toString()
                     )
-//                val userNext = UserNext(
-//                    imageIdList[index],
-//                    editTextPersonName.text.toString(),
-//                )
-//                userList?.add(userNext)
-//                Log.d("test", "Button1: ${userList.size}")
                 adapter.addUser(user)
                 userListApp.add(user)
                 saveFile()
