@@ -10,6 +10,8 @@
     <string name="cant_save_file">Can\'t save file</string>
     <string name="cant_open_file">Can\'t open file</string>
     <string name="menu_home">Home</string>
+    <string name="open">Open</string>
+    <string name="save">Save</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <!-- TODO: Remove or change this placeholder text -->

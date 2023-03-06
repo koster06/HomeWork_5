@@ -25,10 +25,9 @@ import java.util.*
 class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     lateinit var binding: ActivityMainBinding
-    //var userList = kotlin.collections.ArrayList<UserNext>()
-    var userList = mutableListOf<User>()
+    private var userList = kotlin.collections.ArrayList<User>()
+    var userListApp = mutableListOf<User>()
     lateinit var adapter : UserAdapter
-    //private val adapterNextView = UserNextAdapter()
     private val imageIdList = listOf (
         R.drawable.bird1,
         R.drawable.bird2,
@@ -42,31 +41,29 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     )
     private var index = 0
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+//        val intent = Intent(this, MainActivity3::class.java)
+//        startActivity(intent)
 
+//----------------------------------------------------------------------
         setSupportActionBar(binding.toolbar)
-
         binding.navView.setNavigationItemSelectedListener(this)
-
         val toggle = ActionBarDrawerToggle(this, binding.drawerLayout,
             binding.toolbar,
             R.string.navigation_drawer_open,
             R.string.navigation_drawer_close)
-
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, MessageFragment.newInstance())
             binding.navView.setCheckedItem(R.id.nav_message)
         }
-
+//---------------------------------------------------------------------
         val myCalendar = Calendar.getInstance()
         val datePicker = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
             myCalendar.set(Calendar.YEAR, year)
@@ -74,7 +71,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
             writeLabel(myCalendar)
         }
-
         binding.etDate.setOnClickListener{
             DatePickerDialog(this, datePicker, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show()
         }
@@ -86,35 +82,28 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             editTextPhone.addTextChangedListener(textWatcher)
             editTextNumber.addTextChangedListener(textWatcher)
         }
-
+//------------------------------------------------------------------------
         adapter = UserAdapter(object : AdapterListener{
-            override fun removeUser(user: User) {      //this function more safe, cos I didn't have any issues with this
-                val indexToDelete = adapter.userList.indexOfFirst { it.id == user.id }
-                Log.d("test", "Into del: $indexToDelete")
+            override fun removeUser(user: User) {
+                val indexToDelete = adapter.userList
+                    .indexOfFirst { it.id == user.id }
                 adapter.userList.removeAt(indexToDelete)
                 adapter.notifyDataSetChanged()
             }
         })
-        binding.apply {
-            bindSaveButtonListener()
-        }
-        openFile2()
+//--------------------------------------------------------------------------
+//        if (isFileExists(File(filesDir, FILE_NAME))) {
+//            binding.openFile2()
+//        } else {
+//
+//            Toast.makeText(this, "We made file", Toast.LENGTH_SHORT)
+//        }
         init()
 
     }
 
 // functions
 //--------------------------------------------------------------------------------------------------
-
-//    private fun ActivityMainBinding.bindOpenButtonListener() {
-//        openButton.setOnClickListener {
-//            try {
-//                openFile1()
-//            } catch (e: Exception) {
-//                showError(R.string.cant_open_file)
-//            }
-//        }
-//    }
 
     private fun ActivityMainBinding.bindSaveButtonListener() {
         button.setOnClickListener {
@@ -126,40 +115,34 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         }
     }
 
-    // Open: example with wrappers
-//    private fun ActivityMainBinding.openFile1() {
-//        val file = File(filesDir, FILE_NAME)
-//        val inputStream = FileInputStream(file)
-//        val reader = InputStreamReader(inputStream)
-//        val bufferedReader = BufferedReader(reader)
-//        val data = bufferedReader.use {
-//            it.readLines().joinToString(separator = "\n")
-//        }
-//        .setText(data)
-//    }
-
      //Open: example without wrappers
-    private fun openFile2() {
+    private fun ActivityMainBinding.openFile2() {
         val file = File(filesDir, FILE_NAME)
         val input = FileInputStream(file)
         val data = ObjectInputStream(input)
-        val user =  data.readObject() as User
-        userList.add(user)
+        val userList =  data.readObject() as ArrayList<User>
+        userList.forEach{
+            userListApp.add(it)
+            Log.i("test", "openFile2 ${userListApp.size}")
+        }
+        data.close()
+        input.close()
     }
 
     private fun ActivityMainBinding.saveFile() {
         val file = File(filesDir, FILE_NAME)
-        val user = User(imageIdList[index],
-            editTextPersonName.text.toString(),
-            editTextPersonName2.text.toString(),
-            editTextPhone.text.toString(),
-            editTextNumber.text.toString(),
-            etDate.text.toString()
-        )
+//        val user = User(imageIdList[index],
+//            editTextPersonName.text.toString(),
+//            editTextPersonName2.text.toString(),
+//            editTextPhone.text.toString(),
+//            editTextNumber.text.toString(),
+//            etDate.text.toString()
+//        )
+//        userListApp.add(user)
+        Log.i("test" ,"saveFile ${userListApp.size}")
         val output = FileOutputStream(file)
             ObjectOutputStream(output).use {
-//            val bytes = user.toByteArray()
-            it.writeObject(user)
+            it.writeObject(userListApp)
         }
     }
 
@@ -168,7 +151,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     }
 
     private companion object {
-        const val FILE_NAME = "my-file.txt"
+        const val FILE_NAME = "my-file"
     }
     override fun onBackPressed() {
         with(binding) {
@@ -210,9 +193,20 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     }
 
     private fun init() {
+        Log.i("test", "We are into init()")
         binding.apply {
+            Log.i("test", "userListApp: ${userListApp.size}")
             recyclerConteiner.layoutManager = GridLayoutManager(this@MainActivity, 1)
             recyclerConteiner.adapter = adapter
+            if (isFileExists(File(filesDir, FILE_NAME)) && !isFileEmpty(File(filesDir, FILE_NAME))) {
+                openFile2()
+                userListApp.forEach {
+                    Log.i("test", "userListApp: ${userListApp.size}")
+                    adapter.addUser(it)
+                }
+            } else {
+                File(filesDir, FILE_NAME).createNewFile()
+            }
             button.setOnClickListener {
                 if (index>8) index = 0
                 val user = User(imageIdList[index],
@@ -222,13 +216,15 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                     editTextNumber.text.toString(),
                     etDate.text.toString()
                     )
-                val userNext = UserNext(
-                    imageIdList[index],
-                    editTextPersonName.text.toString(),
-                )
+//                val userNext = UserNext(
+//                    imageIdList[index],
+//                    editTextPersonName.text.toString(),
+//                )
 //                userList?.add(userNext)
 //                Log.d("test", "Button1: ${userList.size}")
                 adapter.addUser(user)
+                userListApp.add(user)
+                saveFile()
                 index++
                 it.hideKeyboard()
                 editTextPersonName.text = null
@@ -256,13 +252,49 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         }
         return true
     }
+
+    private fun isFileExists(file: File): Boolean {
+        return file.exists() && !file.isDirectory
+    }
+
+    private fun isFileEmpty(file: File): Boolean {
+        return (file.length() == 0L)
+    }
+
+    // Open: example with wrappers
+//    private fun ActivityMainBinding.openFile1() {
+//        val file = File(filesDir, FILE_NAME)
+//        val inputStream = FileInputStream(file)
+//        val reader = InputStreamReader(inputStream)
+//        val bufferedReader = BufferedReader(reader)
+//        val data = bufferedReader.use {
+//            it.readLines().joinToString(separator = "\n")
+//        }
+//        .setText(data)
+//    }
+    //    private fun ActivityMainBinding.bindOpenButtonListener() {
+//        openButton.setOnClickListener {
+//            try {
+//                openFile1()
+//            } catch (e: Exception) {
+//                showError(R.string.cant_open_file)
+//            }
+//        }
+//    }
+
 }
 // DESCRIPTION
 //--------------------------------------------------------------------------------------------------
 
 /*
-Задание 6.3
-На одном из экранов реализуйте боковое меню. Пункты меню придумайте сами,
-при нажатии на пункт либо открывайте соответствующий экран или диалог покажите.
-Тут по вашему желанию.
+Задание 7.1
+Доработайте проект из предыдущего ДЗ таким образом:
+1) При вводе данных в поле и нажатии на кнопку, запишите введенный данные в файл во внутренней памяти. ++
+2) Данные в список должны считываться из файла. ++
+3) По нажатию на кнопку “Удалить” элемент должен удаляться из файла и из recyclerView
+4) При открытии приложения реализовать логику проверки файла.
+Если файл существует, показать диалог с выбором для пользователя “оставить данные или очистить их”.
+Если пользователь выбирает “оставить файл”, пользователь должен видеть список с ранее введенными элементами.
+Если выбирает “очистить”, очистите файл.
+
 */
