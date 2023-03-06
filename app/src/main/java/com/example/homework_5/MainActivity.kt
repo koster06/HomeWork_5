@@ -86,10 +86,13 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 val indexToDelete = adapter.userList
                     .indexOfFirst { it.id == user.id }
                 userListApp.removeAt(indexToDelete)
-                Log.i("test", "we are remove: ${userListApp.size} ")
                 binding.saveFile()
                 adapter.userList.removeAt(indexToDelete)
                 adapter.notifyDataSetChanged()
+                if (userListApp.isEmpty()) {
+                    Log.i("test", "list empty")
+                    File(filesDir, FILE_NAME).delete()
+                }
             }
         })
 //--------------------------------------------------------------------------
