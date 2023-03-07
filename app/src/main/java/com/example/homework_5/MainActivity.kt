@@ -42,14 +42,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         R.drawable.bird8,
         R.drawable.bird9
     )
-    private val openLauncher =
-        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-            try {
-                uri?.let { openFile(it) }
-            } catch (e: Exception) {
-                showError(R.string.cant_open_file)
-            }
-        } // makes dialog for opening file
     private val saveLauncher =
         registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
             try {
@@ -57,7 +49,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             } catch (e: Exception) {
                 showError(R.string.cant_save_file)
             }
-        } //makes dialog for saving file
+        } //it makes dialog for saving file
     private val externalState = Environment.getExternalStorageState()!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,9 +113,9 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 }
             }) // override fun into interface
 
-            if (isFileExists(File(filesDir, FILE_NAME))) {
+            if (isFileExists(File(filesDir, FILE_NAME)) && !isFileEmpty(File(filesDir, FILE_NAME))) {
                 createSimpleDialog()
-            } else init() // if file isn't exist
+            } else init() // if file isn't exist & file isn't empty
     }
 
 // functions
@@ -210,9 +202,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         }
 
     private fun init() {
-        Log.i("test", "We are into init()")
         binding.apply {
-            Log.i("test", "userListApp: ${userListApp.size}")
             recyclerConteiner.layoutManager = GridLayoutManager(this@MainActivity, 1)
             recyclerConteiner.adapter = adapter
             if (isFileExists(File(filesDir, FILE_NAME)) && !isFileEmpty(File(filesDir, FILE_NAME))) {
@@ -258,6 +248,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                         ObjectOutputStream(it).writeObject(userListApp)
                     }
                 }
+                //saveLauncher.launch("my-file")
             }
         }
     }
@@ -357,5 +348,5 @@ DESCRIPTION
 При  нажатии на “Next Screen” реализовать логику проверки файла во внешней памяти.
 Если файл существует, показать диалог с выбором для пользователя “оставить данные или очистить их”.++
 Если пользователь выбирает “оставить данные” новые данные должны быть записаны после существующих. ++
-Если выбирает “очистить”, очистите файл.
+Если выбирает “очистить”, очистите файл. ++
 */
