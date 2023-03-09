@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Context
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.text.Editable
@@ -17,7 +16,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.app.ActivityCompat
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.homework_5.databinding.ActivityMainBinding
@@ -54,6 +53,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
+        Log.i("test", "onCreate")
             binding = ActivityMainBinding.inflate(layoutInflater)
             setContentView(binding.root)
 
@@ -114,6 +114,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             }) // override fun into interface
 
             if (isFileExists(File(filesDir, FILE_NAME)) && !isFileEmpty(File(filesDir, FILE_NAME))) {
+                Log.i("test", "second if")
                 createSimpleDialog()
             } else init() // if file isn't exist & file isn't empty
     }
@@ -132,7 +133,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         }
 
         //Open: example without wrappers
-    private fun ActivityMainBinding.openFile2() {
+    private fun openFile2() {
             val file = File(filesDir, FILE_NAME)
             val input = FileInputStream(file)
             val data = ObjectInputStream(input)
@@ -202,16 +203,24 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         }
 
     private fun init() {
+        Log.i("test", "init")
         binding.apply {
             recyclerConteiner.layoutManager = GridLayoutManager(this@MainActivity, 1)
             recyclerConteiner.adapter = adapter
-            if (isFileExists(File(filesDir, FILE_NAME)) && !isFileEmpty(File(filesDir, FILE_NAME))) {
-                openFile2()
+            if (isFileCacheExist()) {
+                openFromCache()
                 userListApp.forEach {
                     adapter.addUser(it)
                 }
             } else {
-                File(filesDir, FILE_NAME).createNewFile()
+                if (isFileExists(File(filesDir, FILE_NAME)) && !isFileEmpty(File(filesDir, FILE_NAME))) {
+                    openFile2()
+                    userListApp.forEach {
+                        adapter.addUser(it)
+                    }
+                } else {
+                    File(filesDir, FILE_NAME).createNewFile()
+                }
             }
             button.setOnClickListener {
                 val user = User(imageIdList[choosingPicture(editTextNumber.text.toString())],
@@ -337,16 +346,76 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         } ?: throw IllegalStateException("Can't open input stream")
         //binding.contentEditText.setText(data)
     }
-    
 
+    override fun onPause() {
+        super.onPause()
+        //saveInCache()
+        Log.i("test", "----------------------")
+        Log.i("test", "onPause")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i("test", "onResume")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i("test", "onStart")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Log.i("test", "onRestart")
+    }
+
+    private fun saveInCache(){ // writing cache file
+        Log.i("test", "save in cache")
+        val file = File.createTempFile(FILE_NAME, null, this.cacheDir)
+        val output = FileOutputStream(file.absoluteFile)
+        ObjectOutputStream(output).use {
+            it.writeObject(userListApp)
+        }
+    }
+
+    private fun openFromCache(){
+        Log.i("test", "open from cache")
+        val tempFiles = this.cacheDir.listFiles()
+        val file = File(this.cacheDir, tempFiles.last().name)
+        Log.i("test", tempFiles.last().name)
+        val input = FileInputStream(file)
+        val data = ObjectInputStream(input)
+        val userList = data.readObject() as ArrayList<User>
+        userList.forEach {
+            userListApp.add(it)
+            Log.i("test", "userListApp ${userListApp.size}")
+        }
+        data.close()
+        input.close()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i("test", "on destroy")
+        deleteCache(cacheDir)
+    }
+
+    private fun deleteCache(file : File){
+        file.deleteRecursively()
+    }
+
+    private fun isFileCacheExist(): Boolean {
+        val tempFiles = this.cacheDir.listFiles()
+        return if (tempFiles.isNotEmpty()) {
+            val file = File(this.cacheDir, tempFiles[0].name)
+            file.exists() && !file.isDirectory && file.length() != 0L
+        } else false
+    }
 }
 /*
 DESCRIPTION
 --------------------------------------------------------------------------------------------------
-Задание 7.2
-При нажатии на “Next Screen”, запишите данные из файла в новый файл во внешней памяти. ++/++
-При  нажатии на “Next Screen” реализовать логику проверки файла во внешней памяти.
-Если файл существует, показать диалог с выбором для пользователя “оставить данные или очистить их”.++
-Если пользователь выбирает “оставить данные” новые данные должны быть записаны после существующих. ++
-Если выбирает “очистить”, очистите файл. ++
+Задание 4
+Сохранить изображение из ресурсов во внешнюю память
+Сохранить изображение из ресурсов во внутреннюю память
 */
