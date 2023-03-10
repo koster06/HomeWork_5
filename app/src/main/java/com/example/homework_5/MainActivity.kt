@@ -196,19 +196,20 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     private val textWatcher: TextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                val nameFilled = binding.editTextPersonName.text.toString()
-                val surnameFilled = binding.editTextPersonName2.text.toString()
-                val phoneFilled = binding.editTextPhone.text.toString()
-                val ageFilled = binding.editTextNumber.text.toString()
-                val birthday = binding.etDate.text.toString()
                 with(binding) {
+                val nameFilled = editTextPersonName.text.toString()
+                val surnameFilled = editTextPersonName2.text.toString()
+                val phoneFilled = editTextPhone.text.toString()
+                val ageFilled = editTextNumber.text.toString()
+                val birthday = etDate.text.toString()
                     button.setEnabled(
                         !nameFilled.isEmpty()
-                                && !surnameFilled.isEmpty()
-                                && !phoneFilled.isEmpty()
-                                && !ageFilled.isEmpty()
-                                && !birthday.isEmpty()
+                        && !surnameFilled.isEmpty()
+                        && !phoneFilled.isEmpty()
+                        && !ageFilled.isEmpty()
+                        && !birthday.isEmpty()
                     )
+                    if (button.isEnabled)saveInCache()
                 }
             }
 
@@ -390,10 +391,19 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     private fun saveInCache(){ // writing cache file
         Log.i("test", "save in cache")
-        val file = File.createTempFile(FILE_NAME, null, this.cacheDir)
-        val output = FileOutputStream(file.absoluteFile)
-        ObjectOutputStream(output).use {
-            it.writeObject(userListApp)
+        with(binding) {
+            val unterUser = UnterUser(
+            editTextPersonName.text.toString(),
+            editTextPersonName2.text.toString(),
+            editTextPhone.text.toString(),
+            editTextNumber.text.toString(),
+            etDate.text.toString(),
+            )
+            val file = File.createTempFile(FILE_NAME, null, this@MainActivity.cacheDir)
+            val output = FileOutputStream(file.absoluteFile)
+            ObjectOutputStream(output).use {
+                it.writeObject(unterUser)
+            }
         }
     }
 
@@ -403,20 +413,27 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         val file = File(this.cacheDir, tempFiles.last().name)
         Log.i("test", tempFiles.last().name)
         val input = FileInputStream(file)
-        val data = ObjectInputStream(input)
-        val userList = data.readObject() as ArrayList<User>
-        userList.forEach {
-            userListApp.add(it)
-            Log.i("test", "userListApp ${userListApp.size}")
+        ObjectInputStream(input).use {
+            val unterUser = it.readObject() as UnterUser
+            fromCacheToEdit(unterUser)
         }
-        data.close()
-        input.close()
+        Log.i("test", "unterUser")
     }
 
     override fun onDestroy() {
         super.onDestroy()
         Log.i("test", "on destroy")
         deleteCache(cacheDir)
+    }
+
+    private fun fromCacheToEdit(unterUser: UnterUser) {
+        with(binding){
+            editTextPersonName.setText(unterUser.name)
+            editTextPersonName2.setText(unterUser.secName)
+            editTextPhone.setText(unterUser.phone)
+            editTextNumber.setText(unterUser.age)
+            etDate.text = unterUser.birthday
+        }
     }
 
     private fun deleteCache(file : File){
