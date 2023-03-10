@@ -54,6 +54,7 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
 
     fun addUser(user: User) {
         userList.add(user)
+        Log.i("test", "UserAdapter: ${userList.size}")
         notifyDataSetChanged()
     }
 }

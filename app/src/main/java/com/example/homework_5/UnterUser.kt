@@ -1,9 +1,7 @@
 package com.example.homework_5
 
-
-data class User(
-    val id:Int,
-    val name:String,
+data class UnterUser (
+    val name: String,
     val secName: String,
     val phone: String,
     val age: String,
