@@ -2,7 +2,13 @@ package com.example.homework_5
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.ContentValues
 import android.content.Context
+import android.content.ContextWrapper
+import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -25,9 +31,15 @@ import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
+    lateinit var sqlDb: SQLiteDatabase
+    private val databaseHelper = DatabaseHelper(this)
+    private lateinit var cursor: Cursor
     lateinit var binding: ActivityMainBinding
+    private val cv = ContentValues()
+
     var userListApp = mutableListOf<User>()
     lateinit var adapter: UserAdapter
     private val imageIdList = listOf(
@@ -52,35 +64,39 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     private val externalState = Environment.getExternalStorageState()!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState)
         Log.i("test", "onCreate")
-            binding = ActivityMainBinding.inflate(layoutInflater)
-            setContentView(binding.root)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-            setSupportActionBar(binding.toolbar)
-            binding.navView.setNavigationItemSelectedListener(this)
-            val toggle = ActionBarDrawerToggle(
-                this, binding.drawerLayout,
-                binding.toolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close
-            )
-            binding.drawerLayout.addDrawerListener(toggle)
-            toggle.syncState()
-            if (savedInstanceState == null) {
+//        cursor = sqlDb.rawQuery("SELECT * FROM ${DatabaseHelper.TABLE_NAME}", null)
+//        cursor.moveToLast()
+//        println("SQL: ${cursor.getString((1))}")
+
+        setSupportActionBar(binding.toolbar)
+        binding.navView.setNavigationItemSelectedListener(this)
+        val toggle = ActionBarDrawerToggle(
+            this, binding.drawerLayout,
+            binding.toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
+        binding.drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+        if (savedInstanceState == null) {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, MessageFragment.newInstance())
                 binding.navView.setCheckedItem(R.id.nav_message)
             }
 
-            val myCalendar = Calendar.getInstance()
-            val datePicker = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+        val myCalendar = Calendar.getInstance()
+        val datePicker = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
                 myCalendar.set(Calendar.YEAR, year)
                 myCalendar.set(Calendar.MONTH, month)
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                 writeLabel(myCalendar)
             }
-            binding.etDate.setOnClickListener {
+        binding.etDate.setOnClickListener {
                 DatePickerDialog(
                     this,
                     datePicker,
@@ -90,7 +106,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 ).show()
             }
 
-            with(binding) {
+        with(binding) {
                 etDate.addTextChangedListener(textWatcher)
                 editTextPersonName.addTextChangedListener(textWatcher)
                 editTextPersonName2.addTextChangedListener(textWatcher)
@@ -98,12 +114,12 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 editTextNumber.addTextChangedListener(textWatcher)
             } //textWatcher
 
-            adapter = UserAdapter(object : AdapterListener {
+        adapter = UserAdapter(object : AdapterListener {
                 override fun removeUser(user: User) {
                     val indexToDelete = adapter.userList
                         .indexOfFirst { it.id == user.id }
                     userListApp.removeAt(indexToDelete)
-                    binding.saveFile()
+                    saveFile()
                     adapter.userList.removeAt(indexToDelete)
                     adapter.notifyDataSetChanged()
                     if (userListApp.isEmpty()) {
@@ -113,7 +129,10 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 }
             }) // override fun into interface
 
-            if (isFileExists(File(filesDir, FILE_NAME)) && !isFileEmpty(File(filesDir, FILE_NAME))) {
+        saveToInternalStorage(BitmapFactory.decodeResource(resources, R.drawable.bird1))
+        saveToExternalStorage(BitmapFactory.decodeResource(resources, R.drawable.bird2))
+
+        if (isFileExists(File(filesDir, FILE_NAME)) && !isFileEmpty(File(filesDir, FILE_NAME))) {
                 Log.i("test", "second if")
                 createSimpleDialog()
             } else init() // if file isn't exist & file isn't empty
@@ -145,7 +164,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             input.close()
         }
 
-    private fun ActivityMainBinding.saveFile() {
+    private fun saveFile() {
             val file = File(filesDir, FILE_NAME)
             val output = FileOutputStream(file)
             ObjectOutputStream(output).use {
@@ -158,7 +177,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         }
 
     private companion object {
-            const val FILE_NAME = "my-file"
+        const val FILE_NAME = "my-file"
         }
     override fun onBackPressed() {
             with(binding) {
@@ -230,6 +249,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                     editTextNumber.text.toString(),
                     etDate.text.toString()
                     )
+                    sqlFactory(user)
                     adapter.addUser(user)
                     userListApp.add(user)
                     saveFile()
@@ -242,14 +262,14 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 }
             button2.setOnClickListener {
                 if (externalState == Environment.MEDIA_MOUNTED) {
-                    if (!isFileExists(File (this@MainActivity.getExternalFilesDir(null), FILE_NAME))) {
+                    val file = File (this@MainActivity.getExternalFilesDir(null), FILE_NAME)
+                    if (!isFileExists(file)) {
                         Toast.makeText(
                             this@MainActivity,
                             "The file will be written in External storage",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                    val file = File (this@MainActivity.getExternalFilesDir(null), FILE_NAME)
                     if (isFileExists(file)){
                         createSimpleDialog2()
                     }
@@ -257,7 +277,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                         ObjectOutputStream(it).writeObject(userListApp)
                     }
                 }
-                //saveLauncher.launch("my-file")
             }
         }
     }
@@ -282,7 +301,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             return (file.length() == 0L)
         }
 
-    private fun ActivityMainBinding.choosingPicture(age:String): Int {
+    private fun choosingPicture(age:String): Int {
         return when(age.toInt()) {
             in 0..9 -> 1
             in 10 .. 19 -> 2
@@ -404,6 +423,16 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         file.deleteRecursively()
     }
 
+    private fun sqlFactory (user: User) {
+        sqlDb = databaseHelper.readableDatabase
+        cv.put(DatabaseHelper.COLUMN_PERSON, user.name)
+        cv.put(DatabaseHelper.COLUMN_SURNAME, user.secName)
+        cv.put(DatabaseHelper.COLUMN_PHONE, user.phone.toInt())
+        cv.put(DatabaseHelper.COLUMN_AGE, user.age.toInt())
+        cv.put(DatabaseHelper.COLUMN_DATE, user.birthday)
+        sqlDb.insert(DatabaseHelper.TABLE_NAME, null, cv)
+    }
+
     private fun isFileCacheExist(): Boolean {
         val tempFiles = this.cacheDir.listFiles()
         return if (tempFiles.isNotEmpty()) {
@@ -411,11 +440,41 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             file.exists() && !file.isDirectory && file.length() != 0L
         } else false
     }
+
+    private fun saveToInternalStorage(bitmapImage: Bitmap){
+        val cw = ContextWrapper(applicationContext)
+        val directory = cw.getDir("imageDir", MODE_PRIVATE)
+        val myPath = File(directory, "profile.jpg")
+        val out = FileOutputStream(myPath)
+            out.use {
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, out)
+        }
+    } //save image from res to internal storage
+    private fun saveToExternalStorage(bitmapImage: Bitmap) {
+        if (externalState == Environment.MEDIA_MOUNTED) {
+            val file = File (this@MainActivity.getExternalFilesDir(null), "profile.jpg")
+            val out = FileOutputStream(file)
+            out.use {
+                bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, out)
+            }
+        }
+    } //save image from res to external storage
+
 }
 /*
 DESCRIPTION
 --------------------------------------------------------------------------------------------------
-Задание 4
+Задание 7.4
 Сохранить изображение из ресурсов во внешнюю память
 Сохранить изображение из ресурсов во внутреннюю память
+
+Задание 8.1. SQLiteOpenHelper
+1) При вводе данных в поле и нажатии на кнопку, запишите введенный данные
+в базу данных используя SQLiteOpenHelper. ++
+2) Данные в список должны считываться из бд.
+3) По нажатию на кнопку “Удалить” элемент должен удаляться из бд и из recyclerView
+4) Перед списком добавить две кнопки, по нажатию на которые происходит сортировка списка
+(по какому принципу сортировать решайте сами)
+5) Добавить кнопку “отобразить первые 5 элементов”, по нажатию на которую
+происходит отображение первых 5 элементов. (в списке на этот момент должно быть минимум 6 элементов)
 */
