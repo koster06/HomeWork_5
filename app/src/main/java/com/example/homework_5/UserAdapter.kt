@@ -13,9 +13,9 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
 
     var userList = mutableListOf<User>()
     class UserHolder(item: View) : RecyclerView.ViewHolder(item) {
-        val binding = CardItemBinding.bind(item)
+        private val binding = CardItemBinding.bind(item)
         fun bind(user: User) = with(binding) {
-            imV.setImageResource(user.id)
+            imV.setImageResource(user.image)
             tvName.text = user.name
             tvSecond.text = user.secName
             tvPhone.text = user.phone
@@ -54,7 +54,6 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
 
     fun addUser(user: User) {
         userList.add(user)
-        Log.i("test", "UserAdapter: ${userList.size}")
         notifyDataSetChanged()
     }
 }

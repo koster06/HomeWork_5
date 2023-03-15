@@ -7,5 +7,6 @@ data class User(
     val secName: String,
     val phone: String,
     val age: String,
-    val birthday:String
+    val birthday:String,
+    val image: Int
     ) : java.io.Serializable

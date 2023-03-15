@@ -1,5 +1,6 @@
 package com.example.homework_5
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.ContentValues
@@ -8,7 +9,6 @@ import android.content.ContextWrapper
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -25,12 +25,13 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.homework_5.DatabaseHelper.Companion.COLUMN_ID
+import com.example.homework_5.DatabaseHelper.Companion.TABLE_NAME
 import com.example.homework_5.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
@@ -119,6 +120,8 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                     val indexToDelete = adapter.userList
                         .indexOfFirst { it.id == user.id }
                     userListApp.removeAt(indexToDelete)
+                    Log.i("test", "$indexToDelete")
+                    deleteUserFromSql(user.id)
                     saveFile()
                     adapter.userList.removeAt(indexToDelete)
                     adapter.notifyDataSetChanged()
@@ -129,13 +132,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 }
             }) // override fun into interface
 
-        saveToInternalStorage(BitmapFactory.decodeResource(resources, R.drawable.bird1))
-        saveToExternalStorage(BitmapFactory.decodeResource(resources, R.drawable.bird2))
-
-        if (isFileExists(File(filesDir, FILE_NAME)) && !isFileEmpty(File(filesDir, FILE_NAME))) {
-                Log.i("test", "second if")
-                createSimpleDialog()
-            } else init() // if file isn't exist & file isn't empty
+        init()
     }
 
 // functions
@@ -151,7 +148,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             }
         }
 
-        //Open: example without wrappers
     private fun openFile2() {
             val file = File(filesDir, FILE_NAME)
             val input = FileInputStream(file)
@@ -178,6 +174,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     private companion object {
         const val FILE_NAME = "my-file"
+        const val TEST = "test"
         }
     override fun onBackPressed() {
             with(binding) {
@@ -195,6 +192,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     private val textWatcher: TextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            @SuppressLint("SuspiciousIndentation")
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 with(binding) {
                 val nameFilled = editTextPersonName.text.toString()
@@ -227,39 +225,39 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         binding.apply {
             recyclerConteiner.layoutManager = GridLayoutManager(this@MainActivity, 1)
             recyclerConteiner.adapter = adapter
-            if (isFileCacheExist()) {
-                openFromCache()
-                userListApp.forEach {
-                    adapter.addUser(it)
-                }
-            } else {
-                if (isFileExists(File(filesDir, FILE_NAME)) && !isFileEmpty(File(filesDir, FILE_NAME))) {
-                    openFile2()
-                    userListApp.forEach {
-                        adapter.addUser(it)
-                    }
-                } else {
-                    File(filesDir, FILE_NAME).createNewFile()
-                }
+            Log.i(TEST, "adapter")
+            userListApp = getUser()
+            Log.i(TEST, "userList")
+            if (userListApp.isNotEmpty()) {
+            userListApp.forEach {
+                adapter.addUser(it)
             }
+        }
+//            if (isFileExists(File(filesDir, FILE_NAME)) && !isFileEmpty(File(filesDir, FILE_NAME))) {
+//                    openFile2()
+//                    userListApp.forEach {
+//                        adapter.addUser(it)
+//                    }
+//                } else {
+//                    File(filesDir, FILE_NAME).createNewFile()
+//                }
             button.setOnClickListener {
-                val user = User(imageIdList[choosingPicture(editTextNumber.text.toString())],
+                sqlFactory(User(
+                    0,
                     editTextPersonName.text.toString(),
                     editTextPersonName2.text.toString(),
                     editTextPhone.text.toString(),
                     editTextNumber.text.toString(),
-                    etDate.text.toString()
-                    )
-                    sqlFactory(user)
-                    adapter.addUser(user)
-                    userListApp.add(user)
-                    saveFile()
-                    it.hideKeyboard()
-                    editTextPersonName.text = null
-                    editTextPersonName2.text = null
-                    editTextPhone.text = null
-                    editTextNumber.text = null
-                    etDate.text = null
+                    etDate.text.toString(),
+                    imageIdList[choosingPicture(editTextNumber.text.toString())]
+                ))
+                Log.i("test", "sql made user")
+                adapter.addUser(sqlUnFactory())
+                Log.i("test", "image: ${choosingPicture(editTextNumber.text.toString())}")
+                //saveFile()
+
+                it.hideKeyboard()
+                clearEditText()
                 }
             button2.setOnClickListener {
                 if (externalState == Environment.MEDIA_MOUNTED) {
@@ -279,6 +277,15 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                     }
                 }
             }
+        }
+    }
+    private fun clearEditText(){
+        with(binding) {
+            editTextPersonName.text = null
+            editTextPersonName2.text = null
+            editTextPhone.text = null
+            editTextNumber.text = null
+            etDate.text = null
         }
     }
 
@@ -367,28 +374,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         //binding.contentEditText.setText(data)
     }
 
-    override fun onPause() {
-        super.onPause()
-        //saveInCache()
-        Log.i("test", "----------------------")
-        Log.i("test", "onPause")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.i("test", "onResume")
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.i("test", "onStart")
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        Log.i("test", "onRestart")
-    }
-
     private fun saveInCache(){ // writing cache file
         Log.i("test", "save in cache")
         with(binding) {
@@ -440,14 +425,76 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         file.deleteRecursively()
     }
 
-    private fun sqlFactory (user: User) {
+    private fun sqlFactory (user: User):User {
         sqlDb = databaseHelper.readableDatabase
         cv.put(DatabaseHelper.COLUMN_PERSON, user.name)
         cv.put(DatabaseHelper.COLUMN_SURNAME, user.secName)
         cv.put(DatabaseHelper.COLUMN_PHONE, user.phone.toInt())
         cv.put(DatabaseHelper.COLUMN_AGE, user.age.toInt())
         cv.put(DatabaseHelper.COLUMN_DATE, user.birthday)
-        sqlDb.insert(DatabaseHelper.TABLE_NAME, null, cv)
+        cv.put(DatabaseHelper.COLUMN_IMAGE, user.image)
+        sqlDb.insert(TABLE_NAME, null, cv)
+        return user
+    }
+
+    private fun sqlUnFactory(): User {
+        lateinit var user : User
+        val qry = "Select * From $TABLE_NAME"
+        sqlDb = databaseHelper.readableDatabase
+        cursor = sqlDb.rawQuery(qry, null)
+        if ( cursor.count != 0) {
+            cursor.use {
+                while (cursor.moveToNext()) {
+                    user = User(
+                        it.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)),
+                        it.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PERSON)),
+                        it.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_SURNAME)),
+                        it.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PHONE)),
+                        it.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_AGE)),
+                        it.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_DATE)),
+                        it.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_IMAGE))
+                    )
+                    Log.i(TEST, "${user.id}")
+                }
+            }
+        }
+        return user
+    }
+
+    fun deleteUserFromSql(userId: Int) {
+        val qry = "Delete From $TABLE_NAME where $COLUMN_ID = $userId"
+        sqlDb = databaseHelper.writableDatabase
+        val cursor = sqlDb.execSQL(qry)
+        sqlDb.close()
+    }
+
+    private fun getUser():ArrayList<User> {
+        val qry = "Select * From $TABLE_NAME"
+        val db = databaseHelper.readableDatabase
+        cursor = db.rawQuery(qry, null)
+        val userList = ArrayList<User>()
+        if (cursor.count != 0) {
+            Log.i(TEST, "getUser")
+            while (cursor.moveToNext()) {
+                Log.i(TEST, "cursor")
+                val user = User(
+                    cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PERSON)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_SURNAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PHONE)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_AGE)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_DATE)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_IMAGE))
+                )
+                userList.add(user)
+            }
+        }
+        cursor.close()
+        return userList
+    }
+
+    private fun sortSql () {
+
     }
 
     private fun isFileCacheExist(): Boolean {
@@ -458,6 +505,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         } else false
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private fun saveToInternalStorage(bitmapImage: Bitmap){
         val cw = ContextWrapper(applicationContext)
         val directory = cw.getDir("imageDir", MODE_PRIVATE)
@@ -481,15 +529,11 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 /*
 DESCRIPTION
 --------------------------------------------------------------------------------------------------
-Задание 7.4
-Сохранить изображение из ресурсов во внешнюю память
-Сохранить изображение из ресурсов во внутреннюю память
-
 Задание 8.1. SQLiteOpenHelper
 1) При вводе данных в поле и нажатии на кнопку, запишите введенный данные
 в базу данных используя SQLiteOpenHelper. ++
-2) Данные в список должны считываться из бд.
-3) По нажатию на кнопку “Удалить” элемент должен удаляться из бд и из recyclerView
+2) Данные в список должны считываться из бд. ++
+3) По нажатию на кнопку “Удалить” элемент должен удаляться из бд и из recyclerView ++
 4) Перед списком добавить две кнопки, по нажатию на которые происходит сортировка списка
 (по какому принципу сортировать решайте сами)
 5) Добавить кнопку “отобразить первые 5 элементов”, по нажатию на которую
