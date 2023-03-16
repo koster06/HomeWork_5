@@ -56,4 +56,8 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
         userList.add(user)
         notifyDataSetChanged()
     }
+    fun clearList() {
+        userList.clear()
+        notifyDataSetChanged()
+    }
 }

@@ -26,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.homework_5.DatabaseHelper.Companion.COLUMN_ID
+import com.example.homework_5.DatabaseHelper.Companion.DATABASE_NAME
 import com.example.homework_5.DatabaseHelper.Companion.TABLE_NAME
 import com.example.homework_5.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
@@ -175,6 +176,10 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     private companion object {
         const val FILE_NAME = "my-file"
         const val TEST = "test"
+        const val QRY1 = "Select * From $TABLE_NAME ORDER BY age DESC"
+        const val QRY2 = "Select * From $TABLE_NAME ORDER BY name ASC"
+        const val QRY = "Select * From $TABLE_NAME"
+        const val QRY3 = "Select * From $TABLE_NAME LIMIT 5"
         }
     override fun onBackPressed() {
             with(binding) {
@@ -225,22 +230,12 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         binding.apply {
             recyclerConteiner.layoutManager = GridLayoutManager(this@MainActivity, 1)
             recyclerConteiner.adapter = adapter
-            Log.i(TEST, "adapter")
-            userListApp = getUser()
-            Log.i(TEST, "userList")
+            userListApp = getUser(QRY)
             if (userListApp.isNotEmpty()) {
             userListApp.forEach {
                 adapter.addUser(it)
             }
         }
-//            if (isFileExists(File(filesDir, FILE_NAME)) && !isFileEmpty(File(filesDir, FILE_NAME))) {
-//                    openFile2()
-//                    userListApp.forEach {
-//                        adapter.addUser(it)
-//                    }
-//                } else {
-//                    File(filesDir, FILE_NAME).createNewFile()
-//                }
             button.setOnClickListener {
                 sqlFactory(User(
                     0,
@@ -260,21 +255,37 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 clearEditText()
                 }
             button2.setOnClickListener {
-                if (externalState == Environment.MEDIA_MOUNTED) {
-                    val file = File (this@MainActivity.getExternalFilesDir(null), FILE_NAME)
-                    if (!isFileExists(file)) {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "The file will be written in External storage",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    if (isFileExists(file)){
-                        createSimpleDialog2()
-                    }
-                    FileOutputStream(file).use {
-                        ObjectOutputStream(it).writeObject(userListApp)
-                    }
+                adapter.clearList()
+                getUser(QRY3).forEach {
+                    adapter.addUser(it)
+                }
+//                if (externalState == Environment.MEDIA_MOUNTED) {
+//                    val file = File (this@MainActivity.getExternalFilesDir(null), FILE_NAME)
+//                    if (!isFileExists(file)) {
+//                        Toast.makeText(
+//                            this@MainActivity,
+//                            "The file will be written in External storage",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    }
+//                    if (isFileExists(file)){
+//                        createSimpleDialog2()
+//                    }
+//                    FileOutputStream(file).use {
+//                        ObjectOutputStream(it).writeObject(userListApp)
+//                    }
+//                }
+            }
+            button3.setOnClickListener {
+                adapter.clearList()
+                sortSql1(QRY1, 4).forEach {
+                    adapter.addUser(it)
+                }
+            }
+            button4.setOnClickListener {
+                adapter.clearList()
+                sortSql1(QRY2, 2).forEach {
+                    adapter.addUser(it)
                 }
             }
         }
@@ -437,7 +448,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         return user
     }
 
-    private fun sqlUnFactory(): User {
+    private fun sqlUnFactory(): User { //with "use{}"
         lateinit var user : User
         val qry = "Select * From $TABLE_NAME"
         sqlDb = databaseHelper.readableDatabase
@@ -468,10 +479,9 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         sqlDb.close()
     }
 
-    private fun getUser():ArrayList<User> {
-        val qry = "Select * From $TABLE_NAME"
+    private fun getUser(string: String):ArrayList<User> { //with .close()
         val db = databaseHelper.readableDatabase
-        cursor = db.rawQuery(qry, null)
+        cursor = db.rawQuery(string, null)
         val userList = ArrayList<User>()
         if (cursor.count != 0) {
             Log.i(TEST, "getUser")
@@ -493,8 +503,30 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         return userList
     }
 
-    private fun sortSql () {
-
+    private fun sortSql1 (string: String, index:Int): ArrayList<User> {
+        val db = databaseHelper.readableDatabase
+        val userList = ArrayList<User>()
+        cursor = db.rawQuery(string, null)
+        Log.i(TEST,"in sort")
+        if (cursor.count != 0) {
+            cursor.use {
+                Log.i(TEST, "getUser")
+                while (it.moveToNext()) {
+                    println("SQL: ${it.getString(1)} ${it.getInt(index)}")
+                    val user = User(
+                        it.getInt(it.getColumnIndexOrThrow(COLUMN_ID)),
+                        it.getString(it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PERSON)),
+                        it.getString(it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_SURNAME)),
+                        it.getString(it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_PHONE)),
+                        it.getString(it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_AGE)),
+                        it.getString(it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_DATE)),
+                        it.getInt(it.getColumnIndexOrThrow(DatabaseHelper.COLUMN_IMAGE))
+                    )
+                    userList.add(user)
+                }
+            }
+        }
+        return userList
     }
 
     private fun isFileCacheExist(): Boolean {
@@ -535,7 +567,7 @@ DESCRIPTION
 2) Данные в список должны считываться из бд. ++
 3) По нажатию на кнопку “Удалить” элемент должен удаляться из бд и из recyclerView ++
 4) Перед списком добавить две кнопки, по нажатию на которые происходит сортировка списка
-(по какому принципу сортировать решайте сами)
+(по какому принципу сортировать решайте сами) ++
 5) Добавить кнопку “отобразить первые 5 элементов”, по нажатию на которую
-происходит отображение первых 5 элементов. (в списке на этот момент должно быть минимум 6 элементов)
+происходит отображение первых 5 элементов. (в списке на этот момент должно быть минимум 6 элементов)++
 */

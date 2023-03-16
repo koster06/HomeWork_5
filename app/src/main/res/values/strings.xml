@@ -12,6 +12,9 @@
     <string name="menu_home">Home</string>
     <string name="open">Open</string>
     <string name="save">Save</string>
+    <string name="limit">Limit</string>
+    <string name="sort1">Sort 1</string>
+    <string name="sort2">Sort 2</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <!-- TODO: Remove or change this placeholder text -->
