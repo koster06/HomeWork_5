@@ -3,9 +3,7 @@ package com.example.homework_5
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.content.ContentValues
-import android.content.Context
-import android.content.ContextWrapper
+import android.content.*
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.Bitmap
@@ -41,7 +39,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     private lateinit var cursor: Cursor
     lateinit var binding: ActivityMainBinding
     private val cv = ContentValues()
-
     var userListApp = mutableListOf<User>()
     lateinit var adapter: UserAdapter
     private val imageIdList = listOf(
@@ -117,21 +114,35 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             } //textWatcher
 
         adapter = UserAdapter(object : AdapterListener {
-                override fun removeUser(user: User) {
-                    val indexToDelete = adapter.userList
-                        .indexOfFirst { it.id == user.id }
-                    userListApp.removeAt(indexToDelete)
-                    Log.i("test", "$indexToDelete")
-                    deleteUserFromSql(user.id)
-                    saveFile()
-                    adapter.userList.removeAt(indexToDelete)
-                    adapter.notifyDataSetChanged()
-                    if (userListApp.isEmpty()) {
-                        Log.i("test", "list empty")
-                        File(filesDir, FILE_NAME).delete()
+            override fun removeUser(user: User) {
+                val indexToDelete = adapter.userList
+                    .indexOfFirst { it.id == user.id }
+                userListApp.removeAt(indexToDelete)
+                deleteUserFromSql(user.id)
+                saveFile()
+                adapter.userList.removeAt(indexToDelete)
+                adapter.notifyDataSetChanged()
+                }
+
+            override fun sendPreference(user: User) {
+                Log.i(TEST, "next screen")
+                val sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+                with(user) {
+                    with(editor) {
+                        putString(KEY_NAME, name)
+                        putString(KEY_SURNAME, secName)
+                        putString(KEY_PHONE, phone)
+                        putString(KEY_AGE, age)
+                        putString(KEY_DATE, birthday)
+                        putInt(KEY_IMAGE, image)
+                        apply()
                     }
                 }
-            }) // override fun into interface
+                intent = Intent(this@MainActivity, MainActivity2::class.java)
+                startActivity(intent)
+            }
+            })
 
         init()
     }
@@ -174,6 +185,13 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         }
 
     private companion object {
+        const val SHARED_PREF = "myPref"
+        const val KEY_NAME = "name"
+        const val KEY_SURNAME = "surname"
+        const val KEY_PHONE = "phone"
+        const val KEY_AGE = "age"
+        const val KEY_DATE = "birthday"
+        const val KEY_IMAGE = "image"
         const val FILE_NAME = "my-file"
         const val TEST = "test"
         const val QRY1 = "Select * From $TABLE_NAME ORDER BY age DESC"
@@ -561,13 +579,8 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 /*
 DESCRIPTION
 --------------------------------------------------------------------------------------------------
-Задание 8.1. SQLiteOpenHelper
-1) При вводе данных в поле и нажатии на кнопку, запишите введенный данные
-в базу данных используя SQLiteOpenHelper. ++
-2) Данные в список должны считываться из бд. ++
-3) По нажатию на кнопку “Удалить” элемент должен удаляться из бд и из recyclerView ++
-4) Перед списком добавить две кнопки, по нажатию на которые происходит сортировка списка
-(по какому принципу сортировать решайте сами) ++
-5) Добавить кнопку “отобразить первые 5 элементов”, по нажатию на которую
-происходит отображение первых 5 элементов. (в списке на этот момент должно быть минимум 6 элементов)++
+Задание 8.1.
+При нажатии на элемент списка должен открыть новый экран,
+в который необходимо передать данные об элементе через SharedPreferences
+(на первом экране данные записываются в SharedPreferences, на втором экране считываются)
 */

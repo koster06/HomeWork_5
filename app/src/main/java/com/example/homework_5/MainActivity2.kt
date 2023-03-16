@@ -21,33 +21,31 @@ class MainActivity2 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMain2Binding.inflate(layoutInflater)
         setContentView(binding.root)
-        val extras = intent.extras
-        val userList = extras?.getParcelableArrayList<UserNext>("user")
-        Log.d("test", "Activity2: ${userList?.size}")
-        binding.recyclerNextView.layoutManager = GridLayoutManager(this@MainActivity2, 2)
-        binding.recyclerNextView.adapter = adapterNextView
-        userList?.forEach {
-            adapterNextView.addNextUser(it)
+
+        val sharedPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE)
+
+        with(binding) {
+            with(sharedPreferences) {
+                tvName2.text = getString(KEY_NAME, null)
+                tvSurname.text= getString(KEY_SURNAME, null)
+                tvPhone2.text = getString(KEY_PHONE, null)
+                tvAge2.text = getString(KEY_AGE, null)
+                tvBirthday2.text = getString(KEY_DATE, null)
+                imView.setImageResource(getInt(KEY_IMAGE, 1))
+            }
         }
-//        val bm = (binding.imageView.drawable as BitmapDrawable).bitmap
-//        setImageViewColor(bm)
-
-
 
     }
 
-    fun setImageViewColor(bitmap: Bitmap) {
-        // Generate the palette and get the vibrant swatch
-        val vibrantSwatch = createPaletteSync(bitmap).darkMutedSwatch
-
-        // Set the toolbar background and text colors.
-        // Fall back to default colors if the vibrant swatch is not available.
-//        with(binding.imageView) {
-//            setBackgroundColor(vibrantSwatch?.rgb ?:
-//                ContextCompat.getColor(context, R.color.white))
-            //}
+    private companion object {
+        const val SHARED_PREF = "myPref"
+        const val KEY_NAME = "name"
+        const val KEY_SURNAME = "surname"
+        const val KEY_PHONE = "phone"
+        const val KEY_AGE = "age"
+        const val KEY_DATE = "birthday"
+        const val KEY_IMAGE = "image"
     }
-    private fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
 
 }
 
