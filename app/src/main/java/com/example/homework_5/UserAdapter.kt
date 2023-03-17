@@ -13,15 +13,16 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
 
     var userList = mutableListOf<User>()
     class UserHolder(item: View) : RecyclerView.ViewHolder(item) {
-        val binding = CardItemBinding.bind(item)
+        private val binding = CardItemBinding.bind(item)
         fun bind(user: User) = with(binding) {
-            imV.setImageResource(user.id)
+            imV.setImageResource(user.image)
             tvName.text = user.name
             tvSecond.text = user.secName
             tvPhone.text = user.phone
             tvAge.text = user.age
             tvBirthday.text = user.birthday
             bRemove.tag = user
+            clClick.tag = user
         }
     }
 
@@ -29,10 +30,11 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
         val inflater = LayoutInflater.from(parent.context)
         val binding = CardItemBinding.inflate(inflater,parent,false)
         binding.bRemove.setOnClickListener(this)
+        binding.clClick.setOnClickListener(this)
         return UserHolder(binding.root)
     }
 
-    override fun onBindViewHolder(holder: UserAdapter.UserHolder, position: Int) {
+    override fun onBindViewHolder(holder:UserHolder, position: Int) {
         holder.bind(userList[position])
     }
 
@@ -43,7 +45,13 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
     override fun onClick(v: View) {
         val user = v.tag as User
         when (v.id) {
+
+            R.id.clClick -> {
+                Log.i("test", "onClick")
+                adapterListener.sendPreference(user)
+            }
             R.id.bRemove -> {
+                Log.i("test", "onClick")
                 adapterListener.removeUser(user)
             }
             else -> {
@@ -54,6 +62,10 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
 
     fun addUser(user: User) {
         userList.add(user)
+        notifyDataSetChanged()
+    }
+    fun clearList() {
+        userList.clear()
         notifyDataSetChanged()
     }
 }
