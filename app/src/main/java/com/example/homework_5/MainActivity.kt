@@ -7,26 +7,19 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.homework_5.databinding.ActivityMainBinding
-import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     var userList = kotlin.collections.ArrayList<UserNext>()
     lateinit var adapter : UserAdapter
-    //private val adapterNextView = UserNextAdapter()
     private val imageIdList = listOf ( //и заполнения xml разметки recyclerView
         R.drawable.bird1,
         R.drawable.bird2,
@@ -45,25 +38,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
-        setSupportActionBar(binding.toolbar)
-
-        binding.navView.setNavigationItemSelectedListener(this)
-
-        val toggle = ActionBarDrawerToggle(this, binding.drawerLayout,
-            binding.toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close)
-
-        binding.drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, MessageFragment.newInstance())
-            binding.navView.setCheckedItem(R.id.nav_message)
-        }
 
         val myCalendar = Calendar.getInstance()
         val datePicker = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
@@ -88,7 +62,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         adapter = UserAdapter(object : AdapterListener{
             override fun removeUser(user: User) {      //this function more safe, cos I didn't have any issues with this
                 val indexToDelete = adapter.userList.indexOfFirst { it.id == user.id }
-                Log.d("test", "Into del: $indexToDelete")
                 adapter.userList.removeAt(indexToDelete)
                 adapter.notifyDataSetChanged()
             }
@@ -98,14 +71,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
 // functions
 //--------------------------------------------------------------------------------------------------
-
-    override fun onBackPressed() {
-        with(binding) {
-            if (drawerLayout.isDrawerOpen(GravityCompat.START))
-                drawerLayout.closeDrawer(GravityCompat.START)
-            else super.onBackPressed()
-        }
-    }
 
     private fun View.hideKeyboard() {
         val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -156,7 +121,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                     editTextPersonName.text.toString(),
                 )
                 userList?.add(userNext)
-                Log.d("test", "Button1: ${userList.size}")
                 adapter.addUser(user)
                 index++
                 it.hideKeyboard()
@@ -173,25 +137,10 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             }
         }
     }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.nav_message) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragment_container, MessageFragment.newInstance())
-            .commit()
-        Toast.makeText(this, "To Message Fragment", Toast.LENGTH_SHORT).show()
-        binding.drawerLayout.closeDrawer(GravityCompat.START)
-        }
-        return true
-    }
 }
 // DESCRIPTION
 //--------------------------------------------------------------------------------------------------
 
 /*
-Задание 6.3
-На одном из экранов реализуйте боковое меню. Пункты меню придумайте сами,
-при нажатии на пункт либо открывайте соответствующий экран или диалог покажите.
-Тут по вашему желанию.
+
 */
