@@ -13,14 +13,14 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
 
     var userList = mutableListOf<User>()
     class UserHolder(item: View) : RecyclerView.ViewHolder(item) {
-        val binding = CardItemBinding.bind(item)
+        private val binding = CardItemBinding.bind(item)
         fun bind(user: User) = with(binding) {
-            imV.setImageResource(user.id)
-            tvName.text = user.name
-            tvSecond.text = user.secName
-            tvPhone.text = user.phone
-            tvAge.text = user.age
-            tvBirthday.text = user.birthday
+            //imV.setImageResource(user.id)
+            tvName.text = user.firstName
+            tvSecond.text = user.lastName
+            tvPhone.text = user.email
+            tvAge.text = null
+            tvBirthday.text = null
             bRemove.tag = user
         }
     }
