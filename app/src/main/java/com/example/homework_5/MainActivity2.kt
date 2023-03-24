@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.homework_5.databinding.ActivityMain2Binding
+import user.UserNext
+import user.UserNextAdapter
 
 
 class MainActivity2 : AppCompatActivity() {

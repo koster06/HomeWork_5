@@ -1,4 +1,4 @@
-package com.example.homework_5
+package user
 
 import android.util.Log
 import android.view.LayoutInflater

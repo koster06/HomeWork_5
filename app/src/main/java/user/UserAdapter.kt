@@ -1,11 +1,12 @@
-package com.example.homework_5
+package user
 
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import interfaces.AdapterListener
+import com.example.homework_5.R
 import com.example.homework_5.databinding.CardItemBinding
 
 class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.Adapter<UserAdapter.UserHolder>(),
@@ -13,9 +14,9 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
 
     var userList = mutableListOf<User>()
     class UserHolder(item: View) : RecyclerView.ViewHolder(item) {
-        val binding = CardItemBinding.bind(item)
+        private val binding = CardItemBinding.bind(item)
         fun bind(user: User) = with(binding) {
-            imV.setImageResource(user.id)
+            //imV.setImageResource(user.id.toInt())
             tvName.text = user.name
             tvSecond.text = user.secName
             tvPhone.text = user.phone
@@ -32,7 +33,7 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
         return UserHolder(binding.root)
     }
 
-    override fun onBindViewHolder(holder: UserAdapter.UserHolder, position: Int) {
+    override fun onBindViewHolder(holder: UserHolder, position: Int) {
         holder.bind(userList[position])
     }
 
@@ -54,6 +55,7 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
 
     fun addUser(user: User) {
         userList.add(user)
+        Log.i("test", "${userList.size}")
         notifyDataSetChanged()
     }
 }

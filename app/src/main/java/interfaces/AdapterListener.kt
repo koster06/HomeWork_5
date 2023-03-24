@@ -1,4 +1,6 @@
-package com.example.homework_5
+package interfaces
+
+import user.User
 
 interface AdapterListener {
     fun removeUser(user: User) {}

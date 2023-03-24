@@ -1,6 +1,5 @@
-package com.example.homework_5
+package user
 
-import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 
