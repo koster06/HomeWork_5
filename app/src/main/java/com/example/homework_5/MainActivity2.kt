@@ -1,6 +1,6 @@
 package com.example.homework_5
 
-import android.graphics.Bitmap
+import adapters.UserNextAdapter
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity

@@ -1,4 +1,6 @@
-package com.example.homework_5
+package adapters
+
+import retrofit.User
 
 interface AdapterListener {
     fun removeUser(user: User) {}

@@ -1,4 +1,4 @@
-package com.example.homework_5
+package retrofit
 
 import android.annotation.SuppressLint
 import android.os.Parcel

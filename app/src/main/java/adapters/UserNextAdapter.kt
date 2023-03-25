@@ -1,10 +1,11 @@
-package com.example.homework_5
+package adapters
 
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.homework_5.UserNext
 import com.example.homework_5.databinding.CardNextViewBinding
 
 class UserNextAdapter: RecyclerView.Adapter<UserNextAdapter.UserNextHolder>() {

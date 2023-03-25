@@ -1,5 +1,7 @@
 package com.example.homework_5
 
+import adapters.ProductsAdapter
+import adapters.UsersAdapter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -7,25 +9,23 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.homework_5.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit.UserListResponse
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit.UserService
 import retrofit2.Retrofit
-import retrofit2.Response
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.gson.GsonConverterFactory.*
 
 class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     lateinit var binding: ActivityMainBinding
-    lateinit var adapter : UserAdapter
-    private var userListResponse: UserListResponse? = null
-    private var userList = mutableListOf<User>()
-
+    lateinit var adapterProducts : ProductsAdapter
+    lateinit var adapterUsers : UsersAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -46,46 +46,36 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             binding.navView.setCheckedItem(R.id.nav_message)
         }
 
-        adapter = UserAdapter(object : AdapterListener{
-            override fun removeUser(user: User) {      //this function more safe, cos I didn't have any issues with this
-                val indexToDelete = adapter.userList.indexOfFirst { it.id == user.id }
-                adapter.userList.removeAt(indexToDelete)
-                adapter.notifyDataSetChanged()
-            }
-        })
-
 /* Retrofit section */
 
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://reqres.in/api/")
-            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(REQRES).client(client)
+            .addConverterFactory(create())
             .build()
+
+        adapterProducts = ProductsAdapter()
+        adapterUsers = UsersAdapter()
+        binding.apply {
+            recyclerConteiner.layoutManager = LinearLayoutManager(this@MainActivity)
+            recyclerConteiner.adapter = adapterUsers
+        }
 
         val userService = retrofit.create(UserService::class.java)
         val page = 2
 
         CoroutineScope(Dispatchers.IO).launch {
-            val response = userService.getUsers(page)
-            if (response.isSuccessful) {
-                Log.i("test", "response code: ${response.code()}")
-                userListResponse = response.body()!!
-                userList = userListResponse!!.data as MutableList<User>
-                CoroutineScope(Dispatchers.Main).launch {
-                    binding.apply {
-                        recyclerConteiner.layoutManager = GridLayoutManager(this@MainActivity, 1)
-                        recyclerConteiner.adapter = adapter
-                        Log.i("test","${recyclerConteiner.isActivated}")
-                        Log.i("test", "init ${userList.size}")
-                        userList.forEach {
-                            adapter.addUser(it)
-                        }
-                    }
-                }
-                Log.i("test", "userList size: ${userList.size}")
-            } else {
-                Log.i("test","Error: ${response.code()} \n ${response.message()}")
+            val list = userService.getAllProducts()
+            val listUsers = userService.getUsers(page)
+            runOnUiThread{
+                //Log.i("test", "${list.data.size}")
+                adapterUsers.submitList(listUsers.data)
             }
         }
+
     }
 
 // functions
@@ -109,6 +99,11 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         }
         return true
+    }
+
+    companion object {
+        const val REQRES = "https://reqres.in/api/"
+        const val DUMMY = "https://dummyjson.com"
     }
 }
 // DESCRIPTION

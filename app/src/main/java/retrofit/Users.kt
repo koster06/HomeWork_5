@@ -1,8 +1,6 @@
 package retrofit
 
-import com.example.homework_5.User
-
-data class UserListResponse (
+data class Users (
     val page: Int,
     val perPage: Int,
     val total: Int,

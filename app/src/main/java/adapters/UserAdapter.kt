@@ -1,11 +1,12 @@
-package com.example.homework_5
+package adapters
 
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.homework_5.R
+import retrofit.User
 import com.example.homework_5.databinding.CardItemBinding
 
 class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.Adapter<UserAdapter.UserHolder>(),
@@ -22,6 +23,7 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
             tvAge.text = null
             tvBirthday.text = null
             bRemove.tag = user
+            Log.i("test", "UserHolder: ${user.email}")
         }
     }
 
@@ -32,11 +34,13 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
         return UserHolder(binding.root)
     }
 
-    override fun onBindViewHolder(holder: UserAdapter.UserHolder, position: Int) {
+    override fun onBindViewHolder(holder: UserHolder, position: Int) {
         holder.bind(userList[position])
+        Log.i("test", "onBindViewHolder: ${userList[position]}")
     }
 
     override fun getItemCount(): Int {
+        Log.i("test", "getItemCount: ${userList.size} \n ----------")
         return userList.size
     }
 
@@ -54,6 +58,7 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
 
     fun addUser(user: User) {
         userList.add(user)
+        Log.i("test", "addUser size: ${userList.size}")
         notifyDataSetChanged()
     }
 }
