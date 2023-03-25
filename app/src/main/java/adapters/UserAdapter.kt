@@ -17,8 +17,8 @@ class UserAdapter(private val adapterListener: AdapterListener) : RecyclerView.A
         private val binding = CardItemBinding.bind(item)
         fun bind(user: User) = with(binding) {
             //imV.setImageResource(user.id)
-            tvName.text = user.firstName
-            tvSecond.text = user.lastName
+            tvName.text = user.first_name
+            tvSecond.text = user.last_name
             tvPhone.text = user.email
             tvAge.text = null
             tvBirthday.text = null

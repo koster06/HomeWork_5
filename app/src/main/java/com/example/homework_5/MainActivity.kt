@@ -48,12 +48,12 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
 /* Retrofit section */
 
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.level = HttpLoggingInterceptor.Level.BODY
-        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+//        val interceptor = HttpLoggingInterceptor()
+//        interceptor.level = HttpLoggingInterceptor.Level.BODY
+//        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl(REQRES).client(client)
+            .baseUrl(REQRES)//.client(client)
             .addConverterFactory(create())
             .build()
 
@@ -71,7 +71,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             val list = userService.getAllProducts()
             val listUsers = userService.getUsers(page)
             runOnUiThread{
-                //Log.i("test", "${list.data.size}")
                 adapterUsers.submitList(listUsers.data)
             }
         }
@@ -110,9 +109,8 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 //--------------------------------------------------------------------------------------------------
 
 /*
-Задание 1
-Сделать загрузку списка с помощью Retrofit в RecyclerView на главном экране приложения. (обязательно должна быть картинка в списке)
-Дизайн должен соответствовать material и теме приложения
-Помните про принципы DTO, POJO
-
+Задание 2
+По нажатию на элемент списка, должен открываться новый экран,
+с отображением данных об этом элементе. (информация должна браться
+из другого метода, а не передаваться с первого экрана)
 */

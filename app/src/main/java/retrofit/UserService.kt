@@ -11,6 +11,10 @@ interface UserService {
     @GET("users")
     suspend fun getUsers(@Query("page") page: Int): Users
 
+    @GET("users/{userId}")
+    suspend fun getUser(@Path("userId") userId: Int): UserResponse
+
+
     @GET("products")
     suspend fun getAllProducts(): Products
 
