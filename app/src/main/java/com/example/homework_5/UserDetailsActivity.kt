@@ -31,12 +31,12 @@ class UserDetailsActivity : AppCompatActivity() {
         binding = ActivityUserDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val interceptor = HttpLoggingInterceptor()
+        val interceptor = HttpLoggingInterceptor()  // для вывода информации о статусе подключения в логи
         interceptor.level = HttpLoggingInterceptor.Level.BODY
         val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://reqres.in/api/").client(client)
+            .baseUrl("https://reqres.in/api/").client(client) //для вывода информации о статусе подключения в логи
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -51,19 +51,16 @@ class UserDetailsActivity : AppCompatActivity() {
             val user = loadUser(userId)
             val support = loadSupport(userId)
             runOnUiThread{
-            with(binding) {
-                userName.text = "${user?.first_name} ${user?.last_name}"
-                userEmail.text = user?.email
-                userInfo.text = "${support?.text} \n ${support?.url}"
-                Glide.with(this@UserDetailsActivity)
-                    .load(user?.avatar)
-                    .into(userAvatar)
-            }
+                with(binding) {
+                    userName.text = "${user?.first_name} ${user?.last_name}"
+                    userEmail.text = user?.email
+                    userInfo.text = "${support?.text} \n ${support?.url}"
+                    Glide.with(this@UserDetailsActivity)
+                        .load(user?.avatar)
+                        .into(userAvatar)
+                }
             }
         }
-        // отображаем информацию о пользователе на экране
-        // ...
-
     }
 
     private suspend fun loadUser(userId: Int): User? {

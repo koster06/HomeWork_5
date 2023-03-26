@@ -40,20 +40,24 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         if (savedInstanceState != null) {
-            supportFragmentManager.beginTransaction()
+        }
+
+        binding.button2.setOnClickListener {//I will work with fragment instead activity
+            supportFragmentManager
+                .beginTransaction()
                 .replace(R.id.fragment_container, MessageFragment.newInstance())
-                //.commit()
+                .commit()
             binding.navView.setCheckedItem(R.id.nav_message)
         }
 
 /* Retrofit section */
 
-//        val interceptor = HttpLoggingInterceptor()
-//        interceptor.level = HttpLoggingInterceptor.Level.BODY
-//        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl(REQRES)//.client(client)
+            .baseUrl(REQRES).client(client)
             .addConverterFactory(create())
             .build()
 
@@ -68,7 +72,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         val page = 2
 
         CoroutineScope(Dispatchers.IO).launch {
-            val list = userService.getAllProducts()
+            //val list = userService.getAllProducts()
             val listUsers = userService.getUsers(page)
             runOnUiThread{
                 adapterUsers.submitList(listUsers.data)
@@ -109,8 +113,8 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 //--------------------------------------------------------------------------------------------------
 
 /*
-Задание 2
-По нажатию на элемент списка, должен открываться новый экран,
-с отображением данных об этом элементе. (информация должна браться
-из другого метода, а не передаваться с первого экрана)
+Задание 3
+1). На первом экране над списком добавить кнопку, по нажатию на которую открывается новый экран.
+2). Реализовать метод POST c телом. Это может быть добавление элемента, изменение или получение.
+3). Для метод реализовать необходимый дизайн.
 */
