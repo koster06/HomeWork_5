@@ -1,8 +1,6 @@
 package retrofit
 
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface UserService {
 //    @GET("users")
@@ -20,5 +18,8 @@ interface UserService {
 
     @GET("products")
     suspend fun getProduct (@Path("id")id: Int): Product
+
+    @POST("/api/users")
+    suspend fun createUser(@Body userRequest: UserRequest): UserResponsePost
 
 }

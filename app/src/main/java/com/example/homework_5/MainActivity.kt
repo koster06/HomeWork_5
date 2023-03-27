@@ -2,6 +2,7 @@ package com.example.homework_5
 
 import adapters.ProductsAdapter
 import adapters.UsersAdapter
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -42,12 +43,9 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         if (savedInstanceState != null) {
         }
 
-        binding.button2.setOnClickListener {//I will work with fragment instead activity
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragment_container, MessageFragment.newInstance())
-                .commit()
-            binding.navView.setCheckedItem(R.id.nav_message)
+        binding.button2.setOnClickListener {
+            val intent = Intent(this, MainActivity2::class.java)
+            startActivity(intent)
         }
 
 /* Retrofit section */
@@ -97,6 +95,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragment_container, MessageFragment.newInstance())
+            .addToBackStack(null)
             .commit()
         Toast.makeText(this, "To Message Fragment", Toast.LENGTH_SHORT).show()
         binding.drawerLayout.closeDrawer(GravityCompat.START)
