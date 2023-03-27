@@ -1,54 +1,85 @@
 package com.example.homework_5
 
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.os.Bundle
-import android.util.Log
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.palette.graphics.Palette
-import androidx.recyclerview.widget.GridLayoutManager
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.inputmethod.InputMethodManager
 import com.example.homework_5.databinding.ActivityMain2Binding
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit.UserRequest
+import retrofit.UserService
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity2 : AppCompatActivity() {
 
     private lateinit var binding: ActivityMain2Binding
+    lateinit var userRequest: UserRequest
 
-    private val adapterNextView = UserNextAdapter()
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         binding = ActivityMain2Binding.inflate(layoutInflater)
         setContentView(binding.root)
-        val extras = intent.extras
-        val userList = extras?.getParcelableArrayList<UserNext>("user")
-        Log.d("test", "Activity2: ${userList?.size}")
-        binding.recyclerNextView.layoutManager = GridLayoutManager(this@MainActivity2, 2)
-        binding.recyclerNextView.adapter = adapterNextView
-        userList?.forEach {
-            adapterNextView.addNextUser(it)
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://reqres.in").client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        binding.etName.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                checkFields()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        binding.etWork.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                checkFields()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        binding.apply {
+            button.setOnClickListener {
+                userRequest = UserRequest(
+                    etName.text.toString(),
+                    etWork.text.toString()
+                )
+                val userService = retrofit.create(UserService::class.java)
+                CoroutineScope(Dispatchers.IO).launch {
+                    userService.createUser(userRequest)
+                }
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(etWork.windowToken, 0)
+                clearFields()
+            }
         }
-//        val bm = (binding.imageView.drawable as BitmapDrawable).bitmap
-//        setImageViewColor(bm)
-
-
-
     }
 
-    fun setImageViewColor(bitmap: Bitmap) {
-        // Generate the palette and get the vibrant swatch
-        val vibrantSwatch = createPaletteSync(bitmap).darkMutedSwatch
-
-        // Set the toolbar background and text colors.
-        // Fall back to default colors if the vibrant swatch is not available.
-//        with(binding.imageView) {
-//            setBackgroundColor(vibrantSwatch?.rgb ?:
-//                ContextCompat.getColor(context, R.color.white))
-            //}
+    private fun checkFields() {
+        val etNameText = binding.etName.text.toString().trim()
+        val etWorkText = binding.etWork.text.toString().trim()
+        binding.button.isEnabled = etNameText.isNotEmpty() && etWorkText.isNotEmpty()
     }
-    private fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
+
+    private fun clearFields() {
+        binding.apply {
+            etName.text.clear()
+            etWork.text.clear()
+        }
+    }
 
 }
-
-
