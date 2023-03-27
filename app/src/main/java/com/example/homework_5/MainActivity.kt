@@ -5,7 +5,6 @@ import adapters.UsersAdapter
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -20,7 +19,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit.UserService
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory.*
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
@@ -56,7 +55,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
         val retrofit = Retrofit.Builder()
             .baseUrl(REQRES).client(client)
-            .addConverterFactory(create())
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         adapterProducts = ProductsAdapter()
@@ -112,8 +111,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 //--------------------------------------------------------------------------------------------------
 
 /*
-Задание 3
-1). На первом экране над списком добавить кнопку, по нажатию на которую открывается новый экран.
-2). Реализовать метод POST c телом. Это может быть добавление элемента, изменение или получение.
-3). Для метод реализовать необходимый дизайн.
+Задание 10.1
+На основе 3 задания из ДЗ 8 переписать логику работы приложения используя liveData и паттерн MVVM
 */
