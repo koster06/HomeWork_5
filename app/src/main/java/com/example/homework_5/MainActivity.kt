@@ -112,5 +112,5 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
 /*
 Задание 10.1
-На основе 3 задания из ДЗ 8 переписать логику работы приложения используя liveData и паттерн MVVM
+На основе 3 задания из ДЗ 8 переписать логику работы приложения используя liveData и паттерн MVVM ++
 */
