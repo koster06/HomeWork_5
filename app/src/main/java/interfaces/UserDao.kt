@@ -17,4 +17,11 @@ interface UserDao {
 
     @Delete
     fun delete(user: UserEntity)
+
+    @Query("SELECT * FROM users WHERE id = :userId")
+    fun getUserById(userId: Int): LiveData<UserEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUser(user: UserEntity)
+
 }

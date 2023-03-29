@@ -2,7 +2,9 @@ package entities
 
 import androidx.room.*
 
-@Entity(tableName = "user_addresses",
+@Entity(
+    tableName = "user_addresses",
+    primaryKeys = ["user_id", "address_id"],
     foreignKeys = [
         ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["user_id"]),
         ForeignKey(entity = AddressEntity::class, parentColumns = ["id"], childColumns = ["address_id"])
@@ -13,7 +15,6 @@ import androidx.room.*
     ]
 )
 data class UserAddressEntity(
-    @PrimaryKey val id: Int,
     @ColumnInfo(name = "user_id") val userId: Int,
     @ColumnInfo(name = "address_id") val addressId: Int
 )

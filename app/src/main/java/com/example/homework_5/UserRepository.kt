@@ -40,8 +40,28 @@ class UserRepository(application: Application) {
         return addressDao.getAll()
     }
 
+    fun setAllAddresses(addresses: List<AddressEntity>) {
+        addresses.forEach {
+            addressDao.insert(it)
+        }
+    }
+
     fun getAllUserAddresses(): LiveData<List<UserAddressEntity>> {
         return userAddressDao.getAll()
+    }
+
+    fun addUserAddress(userAddress: UserAddressEntity) {
+        userAddressDao.insert(userAddress)
+    }
+
+    fun setAllUserAddresses(userAddresses: List<UserAddressEntity>) {
+        userAddresses.forEach {
+            userAddressDao.insert(it)
+        }
+    }
+
+    fun getUserById(userId: Int): LiveData<UserEntity> {
+        return userDao.getUserById(userId)
     }
 
 }

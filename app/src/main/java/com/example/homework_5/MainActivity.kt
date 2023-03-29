@@ -2,16 +2,24 @@ package com.example.homework_5
 
 import adapters.ProductsAdapter
 import adapters.UsersAdapter
+import android.app.Application
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.homework_5.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
+import entities.AddressEntity
+import entities.UserAddressEntity
+import entities.UserEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,25 +29,39 @@ import retrofit.UserService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
     lateinit var adapterProducts : ProductsAdapter
     lateinit var adapterUsers : UsersAdapter
+    private lateinit var userRepository: UserRepository
+    private val addresses = listOf(
+        AddressEntity(1, "ул. Ленина, 10", "Москва", "Россия", "A100Z8"),
+        AddressEntity(2, "ул. Пушкина, 5", "Санкт-Петербург", "Россия", "Cr5677o"),
+        AddressEntity(3, "ул. Кирова, 20", "Новосибирск", "Россия", "123X8IO"),
+        AddressEntity(4, "ул. Ленина, 10", "Москва", "Россия", "A100Z8"),
+        AddressEntity(5, "ул. Пушкина, 5", "Санкт-Петербург", "Россия", "Cr5677o"),
+        AddressEntity(6, "ул. Кирова, 20", "Новосибирск", "Россия", "123X8IO")
+    )
+    private val userAddresses = listOf(
+        UserAddressEntity( 7, 1), // Пользователь с id 1 проживает по адресу с id 1
+        UserAddressEntity( 8,2), // Пользователь с id 1 также проживает по адресу с id 2
+        UserAddressEntity(9, 3) ,
+        UserAddressEntity(10,  4), // Пользователь с id 1 проживает по адресу с id 1
+        UserAddressEntity(11, 5), // Пользователь с id 1 также проживает по адресу с id 2
+        UserAddressEntity(12, 6)// Пользователь с id 2 проживает по адресу с id 3
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
-        binding.navView.setNavigationItemSelectedListener(this)
-        val toggle = ActionBarDrawerToggle(this, binding.drawerLayout,
-            binding.toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close)
-        binding.drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-        if (savedInstanceState != null) {
+        userRepository = UserRepository(application)
+        CoroutineScope(Dispatchers.IO).launch {
+            userRepository.apply {
+                setAllAddresses(addresses)
+                    //setAllUserAddresses(userAddresses)
+            }
         }
 
         binding.button2.setOnClickListener {
@@ -65,42 +87,38 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             recyclerConteiner.adapter = adapterUsers
         }
 
-        val userService = retrofit.create(UserService::class.java)
-        val page = 2
-
         CoroutineScope(Dispatchers.IO).launch {
-            //val list = userService.getAllProducts()
-            val listUsers = userService.getUsers(page)
-            runOnUiThread{
-                adapterUsers.submitList(listUsers.data)
+            val userService = retrofit.create(UserService::class.java)
+            val page = 2
+            val response = userService.getUsers(page)
+
+            val users = response.data
+            if (users.isNotEmpty()) {
+//                for (user in users) {
+//                    Log.i("test", "${user.id}")
+//                    Log.i("test", "${userRepository.getUserById(user.id).value?.id}")
+//                    userRepository.addUser(
+//                        UserEntity(
+//                            id = 0,
+//                            first_name = user.first_name,
+//                            last_name = user.last_name,
+//                            email = user.email,
+//                            avatar = user.avatar
+//                        )
+//                    )
+//                }
+            }
+            val users2 = userRepository.getAllUsers()
+            runOnUiThread {
+                users2.observe(this@MainActivity) { userList ->
+                    adapterUsers.submitList(userList)
+                }
             }
         }
-
     }
 
 // functions
 //--------------------------------------------------------------------------------------------------
-
-    override fun onBackPressed() {
-        with(binding) {
-            if (drawerLayout.isDrawerOpen(GravityCompat.START))
-                drawerLayout.closeDrawer(GravityCompat.START)
-            else super.onBackPressed()
-        }
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.nav_message) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragment_container, MessageFragment.newInstance())
-            .addToBackStack(null)
-            .commit()
-        Toast.makeText(this, "To Message Fragment", Toast.LENGTH_SHORT).show()
-        binding.drawerLayout.closeDrawer(GravityCompat.START)
-        }
-        return true
-    }
 
     companion object {
         const val REQRES = "https://reqres.in/api/"

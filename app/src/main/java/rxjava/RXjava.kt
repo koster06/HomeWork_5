@@ -1,5 +1,0 @@
-package rxjava
-
-class RXjava {
-
-}
