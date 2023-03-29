@@ -3,6 +3,7 @@ package com.example.homework_5
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.PublishSubject
@@ -11,7 +12,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.sqrt
 
 class ActivityForHomework : AppCompatActivity() {
-    @SuppressLint("CheckResult")
+    @SuppressLint("CheckResult", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_for_homework)
@@ -23,6 +24,23 @@ class ActivityForHomework : AppCompatActivity() {
         Observable.just(1, 4, 15)  //----11.2----
             .filter { sqrt(it.toDouble()).toInt().toDouble() == sqrt(it.toDouble()) }
             .subscribe { println(it) }
+
+        val button = Button(this) //----11.3----
+        button.text = "Click me"
+        setContentView(button)
+
+        val observable1 = Observable.create { emitter ->
+            button.setOnClickListener {
+                emitter.onNext(Unit)
+            }
+
+            emitter.setCancellable {
+                button.setOnClickListener(null)
+            }
+        }
+
+        observable1.subscribe { println("Button clicked!") }
+
 
         val hotObservable = PublishSubject.create<Int>().apply { //----11.4----
             onNext(1)
@@ -48,7 +66,7 @@ class ActivityForHomework : AppCompatActivity() {
             .publish()
 
         myObservable.connect()
-        // Добавляем задержку в 5 секунд для того, чтобы набралось достаточно данных
+        // Добавляем задержку в 5 секунд и...
         Thread.sleep(5000) // пропускаем 0,1,2,3,4
         // Подписываемся на Observable и выводим данные в консоль
         val observer = myObservable.subscribe { println("Subscriber 1: $it") } // 5,6,7
@@ -109,7 +127,7 @@ class ActivityForHomework : AppCompatActivity() {
             .doOnNext { println("Thread: ${Thread.currentThread().name}, item: $it") }
             .subscribe()
 
-        Observable.create<Int> { emitter -> //----11.8.4----Observable с использованием newThread() Scheduler-а для выполнения событий в отдельном потоке, логирование с помощью observeOn и subscribeOn
+        Observable.create<Int> { emitter -> //----11.8.4----Observable с newThread() Scheduler-а для выполнения событий в отдельном потоке, логирование с помощью observeOn и subscribeOn
             emitter.onNext(1)
             emitter.onNext(2)
             emitter.onNext(3)
@@ -124,7 +142,7 @@ class ActivityForHomework : AppCompatActivity() {
         val source = Observable.just("apple", "banana", "pear", "grape", "orange")
 
         source.filter { !it.contains('r', true) } // Фильтруем слова с буквой "р"
-            .map { it.toUpperCase() } // Преобразуем все слова в верхний регистр
+            .map { it.uppercase() } // Преобразуем все слова в верхний регистр
             .subscribe { println(it) } // Выводим результат в консоль
 
 
