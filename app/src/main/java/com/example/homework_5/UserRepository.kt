@@ -42,8 +42,8 @@ class UserRepository(application: Application) {
         userDao.delete(user)
     }
 
-    suspend fun addAddress(address: AddressEntity) {
-        addressDao.insert(address)
+    suspend fun addAddress(address: AddressEntity):Int {
+        return addressDao.insert(address).toInt()
     }
 
     fun setAllAddresses(addresses: List<AddressEntity>) {
@@ -55,10 +55,16 @@ class UserRepository(application: Application) {
         return addressDao.getAll()
     }
 
+    suspend fun getAddressById(id: Int): LiveData<AddressEntity> {
+        return addressDao.getAddressById(id)
+    }
 
-
-    fun getAllUserAddresses(): LiveData<List<UserAddressEntity>> {
+    suspend fun getAllUserAddresses(): LiveData<List<UserAddressEntity>> {
         return userAddressDao.getAll()
+    }
+
+    suspend fun addUserAddress(userAddressEntity: UserAddressEntity) {
+        userAddressDao.insert(userAddressEntity)
     }
 
 }

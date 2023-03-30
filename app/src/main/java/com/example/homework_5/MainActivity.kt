@@ -1,20 +1,10 @@
 package com.example.homework_5
 
-import adapters.ProductsAdapter
 import adapters.UsersAdapter
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.MenuItem
-import android.widget.Toast
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.homework_5.databinding.ActivityMainBinding
-import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
-import entities.AddressEntity
-import entities.UserAddressEntity
 import entities.UserEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,22 +20,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     lateinit var adapterUsers : UsersAdapter
     private lateinit var userRepository: UserRepository
-    private val addresses = listOf(
-        AddressEntity(0, "ул. Ленина, 10", "Москва", "Россия", "A100Z8"),
-        AddressEntity(0, "ул. Пушкина, 5", "Санкт-Петербург", "Россия", "Cr5677o"),
-        AddressEntity(0, "ул. Кирова, 20", "Новосибирск", "Россия", "123X8IO"),
-        AddressEntity(0, "ул. Ленина, 10", "Москва", "Россия", "A100Z8"),
-        AddressEntity(0, "ул. Пушкина, 5", "Санкт-Петербург", "Россия", "Cr5677o"),
-        AddressEntity(0, "ул. Кирова, 20", "Новосибирск", "Россия", "123X8IO")
-    )
-//    private val userAddresses = listOf(
-//        UserAddressEntity( 7, 1),
-//        UserAddressEntity( 8,2),
-//        UserAddressEntity(9, 3) ,
-//        UserAddressEntity(10,  4),
-//        UserAddressEntity(11, 5),
-//        UserAddressEntity(12, 6)
-//    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -57,11 +32,6 @@ class MainActivity : AppCompatActivity() {
 //                setAllAddresses(addresses)
 //                setAllUserAddresses(userAddresses)
             }
-        }
-
-        binding.button2.setOnClickListener {
-            val intent = Intent(this, MainActivity2::class.java)
-            startActivity(intent)
         }
 
 /* Retrofit section */

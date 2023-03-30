@@ -10,11 +10,13 @@ interface AddressDao {
     fun getAll(): LiveData<List<AddressEntity>>
 
     @Insert
-    fun insert(address: AddressEntity)
+    fun insert(address: AddressEntity):Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllAddresses(addresses: List<AddressEntity>)
 
+    @Query("SELECT * FROM addresses WHERE id = :id")
+    fun getAddressById(id: Int): LiveData<AddressEntity>
 
     @Update
     fun update(address: AddressEntity)

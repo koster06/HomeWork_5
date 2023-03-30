@@ -4,8 +4,18 @@ import androidx.room.*
 
 @Entity(tableName = "user_addresses",
     foreignKeys = [
-        ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["user_id"]),
-        ForeignKey(entity = AddressEntity::class, parentColumns = ["id"], childColumns = ["address_id"])
+        ForeignKey(
+            entity = UserEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["user_id"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = AddressEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["address_id"],
+            onDelete = ForeignKey.CASCADE
+        )
     ],
     indices = [
         Index(value = ["user_id"]),

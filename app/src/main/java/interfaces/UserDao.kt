@@ -12,7 +12,7 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
     fun getUserByEmail(email: String): UserEntity?
 
-    @Query("SELECT * FROM users WHERE id = :id LIMIT 1")
+    @Query("SELECT * FROM users WHERE id = :id")
     fun getUserById(id: Int): UserEntity?
 
     @Insert
