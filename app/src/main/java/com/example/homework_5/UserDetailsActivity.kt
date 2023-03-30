@@ -27,7 +27,6 @@ class UserDetailsActivity : AppCompatActivity() {
 
         userRepository = UserRepository(application)
 
-        // загружаем информацию о пользователе по id
         CoroutineScope(Dispatchers.IO).launch {
             val user = userRepository.getUserById(userId)
             runOnUiThread{
