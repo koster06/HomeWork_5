@@ -26,6 +26,10 @@ class UserRepository(application: Application) {
         return userDao.getUserByEmail(email)
     }
 
+    suspend fun getUserById(id: Int): UserEntity? {
+        return userDao.getUserById(id)
+    }
+
     fun addUser(user: UserEntity) {
         userDao.insert(user)
     }
@@ -38,7 +42,7 @@ class UserRepository(application: Application) {
         userDao.delete(user)
     }
 
-    fun addAddress(address: AddressEntity) {
+    suspend fun addAddress(address: AddressEntity) {
         addressDao.insert(address)
     }
 

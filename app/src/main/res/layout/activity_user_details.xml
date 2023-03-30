@@ -26,14 +26,47 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:textSize="16sp"
-        android:textStyle="italic"
-        android:layout_marginTop="8dp"/>
+        android:textStyle="italic" />
 
-    <TextView
-        android:id="@+id/user_info"
+    <EditText
+        android:id="@+id/etPersonStreet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"/>
+        android:text="@string/street"
+        android:ems="10"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/etPersonCity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/city" />
+
+    <EditText
+        android:id="@+id/etPersonState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/state"
+        android:ems="10"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/etPersonZip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/zip"
+        android:ems="10"
+        android:inputType="textPersonName" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/buttonAdd" />
 
 </LinearLayout>

@@ -8,10 +8,18 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="button">Post screen</string>
+    <string name="buttonAdd">Add Address</string>
     <string name="menu_home">Home</string>
     <string name="button_post">Post</string>
     <string name="hint_name">Name</string>
     <string name="hint_job">Job</string>
+    <string name="street">ул. Ленина, 10</string>
+    <string name="hint_street">street</string>
+    <string name="hint_state">country</string>
+    <string name="city">Москва</string>
+    <string name="state">Россия</string>
+    <string name="hint_zip">zip</string>
+    <string name="zip">A100Z8</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <!-- TODO: Remove or change this placeholder text -->

@@ -28,7 +28,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
-    lateinit var adapterProducts : ProductsAdapter
     lateinit var adapterUsers : UsersAdapter
     private lateinit var userRepository: UserRepository
     private val addresses = listOf(
@@ -55,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         userRepository = UserRepository(application)
         CoroutineScope(Dispatchers.IO).launch {
             userRepository.apply {
-                setAllAddresses(addresses)
+//                setAllAddresses(addresses)
 //                setAllUserAddresses(userAddresses)
             }
         }
