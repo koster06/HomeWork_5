@@ -12,6 +12,10 @@ interface AddressDao {
     @Insert
     fun insert(address: AddressEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllAddresses(addresses: List<AddressEntity>)
+
+
     @Update
     fun update(address: AddressEntity)
 

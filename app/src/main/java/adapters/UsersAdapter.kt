@@ -12,10 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.homework_5.UserDetailsActivity
 import com.example.homework_5.databinding.ItemUserBinding
+import entities.UserEntity
 import retrofit.User
 
 
-class UsersAdapter : ListAdapter<User, UsersAdapter.Holder>(Comparator()) {
+class UsersAdapter : ListAdapter<UserEntity, UsersAdapter.Holder>(Comparator()) {
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -23,8 +24,8 @@ class UsersAdapter : ListAdapter<User, UsersAdapter.Holder>(Comparator()) {
         private val avatar: ImageView = binding.avatar
 
         @SuppressLint("SetTextI18n")
-        fun bind(user: User) = with(binding){
-            name.text = "${user.first_name} ${user.last_name}"
+        fun bind(user: UserEntity) = with(binding){
+            name.text = user.first_name
             email.text = user.email
             Glide.with(itemView.context)
                 .load(user.avatar)
@@ -32,12 +33,12 @@ class UsersAdapter : ListAdapter<User, UsersAdapter.Holder>(Comparator()) {
         }
     }
 
-    class Comparator: DiffUtil.ItemCallback<User>() {
-        override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {
+    class Comparator: DiffUtil.ItemCallback<UserEntity>() {
+        override fun areItemsTheSame(oldItem: UserEntity, newItem: UserEntity): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: User, newItem: User): Boolean {
+        override fun areContentsTheSame(oldItem: UserEntity, newItem: UserEntity): Boolean {
             return oldItem == newItem
         }
 

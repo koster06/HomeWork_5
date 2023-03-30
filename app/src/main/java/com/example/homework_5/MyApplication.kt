@@ -13,7 +13,7 @@ class MyApplication : Application() {
 
         database = Room.databaseBuilder(
             applicationContext,
-            database::class.java,
+            MyDatabase::class.java,
             "my-database"
         ).build()
     }

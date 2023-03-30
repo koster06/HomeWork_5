@@ -22,6 +22,10 @@ class UserRepository(application: Application) {
         return userDao.getAll()
     }
 
+    suspend fun getUserByEmail(email: String): UserEntity? {
+        return userDao.getUserByEmail(email)
+    }
+
     fun addUser(user: UserEntity) {
         userDao.insert(user)
     }
@@ -34,11 +38,20 @@ class UserRepository(application: Application) {
         userDao.delete(user)
     }
 
-    // Методы для работы с таблицей адресов
+    fun addAddress(address: AddressEntity) {
+        addressDao.insert(address)
+    }
+
+    fun setAllAddresses(addresses: List<AddressEntity>) {
+        addressDao.insertAllAddresses(addresses)
+    }
+
 
     fun getAllAddresses(): LiveData<List<AddressEntity>> {
         return addressDao.getAll()
     }
+
+
 
     fun getAllUserAddresses(): LiveData<List<UserAddressEntity>> {
         return userAddressDao.getAll()

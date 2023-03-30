@@ -13,7 +13,7 @@ import androidx.room.*
     ]
 )
 data class UserAddressEntity(
-    @PrimaryKey val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "user_id") val userId: Int,
     @ColumnInfo(name = "address_id") val addressId: Int
 )
