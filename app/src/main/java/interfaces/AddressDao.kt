@@ -18,6 +18,13 @@ interface AddressDao {
     @Query("SELECT * FROM addresses WHERE id = :id")
     fun getAddressById(id: Int): LiveData<AddressEntity>
 
+    @Query("SELECT * FROM addresses WHERE city = :city")
+    fun getAddressesByCity(city: String): LiveData<List<AddressEntity>>
+
+    @Query("SELECT * FROM addresses WHERE state = :state AND zip = :zip")
+    fun getAddressesByStateAndZip(state: String, zip: String): LiveData<List<AddressEntity>>
+
+
     @Update
     fun update(address: AddressEntity)
 

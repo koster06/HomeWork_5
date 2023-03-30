@@ -1,5 +1,6 @@
 package com.example.homework_5
 
+import Constants.Constants.USERID
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -34,7 +35,7 @@ class UserDetailsActivity : AppCompatActivity() {
         binding = ActivityUserDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val userId = intent.getIntExtra("userId", -1)
+        val userId = intent.getIntExtra(USERID, -1)
         Log.i("test", "id: $userId")
 
         userRepository = UserRepository(application)
@@ -83,7 +84,7 @@ class UserDetailsActivity : AppCompatActivity() {
             }
         }
     }
-    fun getRandomNumber(): Int {
+    private fun getRandomNumber(): Int {
         return (0..8).random()
     }
 }

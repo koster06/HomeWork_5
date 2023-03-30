@@ -1,5 +1,6 @@
 package com.example.homework_5
 
+import Constants.Constants.REQRES
 import adapters.UsersAdapter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -27,12 +28,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         userRepository = UserRepository(application)
-        CoroutineScope(Dispatchers.IO).launch {
-            userRepository.apply {
-//                setAllAddresses(addresses)
-//                setAllUserAddresses(userAddresses)
-            }
-        }
 
 /* Retrofit section */
 
@@ -80,12 +75,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-    }
-//--------------------------------------------------------------------------------------------------
-
-    companion object {
-        const val REQRES = "https://reqres.in/api/"
-        const val DUMMY = "https://dummyjson.com"
     }
 }
 // DESCRIPTION

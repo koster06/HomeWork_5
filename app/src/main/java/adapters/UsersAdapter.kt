@@ -1,5 +1,6 @@
 package adapters
 
+import Constants.Constants.USERID
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
@@ -55,7 +56,7 @@ class UsersAdapter : ListAdapter<UserEntity, UsersAdapter.Holder>(Comparator()) 
                     val context = itemView.context
                     val intent = Intent(context, UserDetailsActivity::class.java).apply {
                         // передаем id пользователя на новый экран
-                        putExtra("userId", user.id)
+                        putExtra(USERID, user.id)
                     }
                     context.startActivity(intent)
                 }
