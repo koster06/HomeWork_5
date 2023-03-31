@@ -12,6 +12,7 @@
     <string name="button4">Change Address</string>
     <string name="menu_home">Home</string>
     <string name="button_post">Post</string>
+    <string name="button_address">Addresses</string>
     <string name="hint_name">Name</string>
     <string name="hint_job">Job</string>
     <string name="street">ул. Ленина, 10</string>

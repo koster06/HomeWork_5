@@ -16,7 +16,7 @@ interface UserDao {
     fun getUserById(id: Int): UserEntity?
 
     @Query("SELECT * FROM users WHERE email = :email AND first_name = :first_name LIMIT 1")
-    fun getUserByEmailAndPassword(email: String, password: String): UserEntity?
+    fun getUserByEmailAndPassword(email: String, first_name: String): UserEntity?
 
 
     @Insert

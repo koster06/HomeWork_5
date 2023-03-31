@@ -10,8 +10,8 @@ interface UserAddressDao {
     @Query("SELECT * FROM user_addresses")
     fun getAll(): LiveData<List<UserAddressEntity>>
 
-    @Query("SELECT users.*, addresses.* FROM users JOIN user_addresses ON users.id = user_addresses.user_id JOIN addresses ON addresses.id = user_addresses.address_id")
-    fun getUsersWithAddresses(): LiveData<List<UserAddressEntity>>
+//    @Query("SELECT users.*, addresses.* FROM users JOIN user_addresses ON users.id = user_addresses.user_id JOIN addresses ON addresses.id = user_addresses.address_id")
+//    fun getUsersWithAddresses(): LiveData<List<UserAddressEntity>>
 
     @Query("SELECT users.* FROM users JOIN user_addresses ON users.id = user_addresses.user_id")
     fun getUsersAddressesIfExist(): LiveData<List<UserEntity>>

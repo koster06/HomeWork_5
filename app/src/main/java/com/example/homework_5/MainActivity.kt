@@ -2,6 +2,7 @@ package com.example.homework_5
 
 import Constants.Constants.REQRES
 import adapters.UsersAdapter
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,6 +45,10 @@ class MainActivity : AppCompatActivity() {
         binding.apply {
             recyclerConteiner.layoutManager = LinearLayoutManager(this@MainActivity)
             recyclerConteiner.adapter = adapterUsers
+            button.setOnClickListener {
+                val intent = Intent(this@MainActivity, ActivityAddressesList::class.java)
+                startActivity(intent)
+            }
         }
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -81,6 +86,14 @@ class MainActivity : AppCompatActivity() {
 //--------------------------------------------------------------------------------------------------
 
 /*
-Задание 10.1
-На основе 3 задания из ДЗ 8 переписать логику работы приложения используя liveData и паттерн MVVM ++
+На экране реализовать UI для отображения списка адресов.
+ Реализовать логику выбора адреса пользователем (По нажатию на элемент выбор можно записывать в
+ SharedPreferences или в отдельную таблицу или в файл по вашему выбору).
+Добавить кнопку сохранить, при нажатии на которую в таблицу адрес пользователя будет записываться
+данные пользователя и адрес, который он выбрал.
+ После сохранения данных перенаправьте пользователя на 3-й экран,
+ где отобразить список пользователей и их адреса.
+ Добавьте кнопку, при нажатии на которую, будут оставаться только пользователи, у которых есть адрес
+ Добавьте поле ввода, при вводе должен осуществляться поиск по списку пользователей.
+ Логику поиска придумайте сами (поиск после нажатия на кнопку или при вводе в поле или другое)
 */
