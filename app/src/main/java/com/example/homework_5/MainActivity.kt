@@ -5,6 +5,7 @@ import adapters.UsersAdapter
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.homework_5.databinding.ActivityMainBinding
 import entities.UserEntity
@@ -40,6 +41,8 @@ class MainActivity : AppCompatActivity() {
             .baseUrl(REQRES).client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+
+/* Adapter section */
 
         adapterUsers = UsersAdapter()
         binding.apply {
@@ -89,7 +92,7 @@ class MainActivity : AppCompatActivity() {
 На экране реализовать UI для отображения списка адресов.
  Реализовать логику выбора адреса пользователем (По нажатию на элемент выбор можно записывать в
  SharedPreferences или в отдельную таблицу или в файл по вашему выбору).
-Добавить кнопку сохранить, при нажатии на которую в таблицу адрес пользователя будет записываться
+Добавить кнопку сохранить, при нажатии на которую в таблицу "адрес пользователя" будет записываться
 данные пользователя и адрес, который он выбрал.
  После сохранения данных перенаправьте пользователя на 3-й экран,
  где отобразить список пользователей и их адреса.

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.homework_5.databinding.AddressItemBinding
 import entities.AddressEntity
 
-class AddressAdapter: ListAdapter<AddressEntity, AddressAdapter.Holder>(Comparator()) {
+class AddressAdapter(private val listener: OnItemClickListener): ListAdapter<AddressEntity, AddressAdapter.Holder>(Comparator()) {
 
     class Comparator: DiffUtil.ItemCallback<AddressEntity>()  {
         override fun areItemsTheSame(oldItem: AddressEntity, newItem: AddressEntity): Boolean {
@@ -36,13 +36,26 @@ class AddressAdapter: ListAdapter<AddressEntity, AddressAdapter.Holder>(Comparat
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddressAdapter.Holder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val binding = AddressItemBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
-        return Holder(binding.root)
+        return Holder(binding.root).apply {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val address = getItem(position)
+                    listener.onItemClick(address)
+                }
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: AddressAdapter.Holder, position: Int) {
         holder.bind(getItem(position))
     }
+
+    interface OnItemClickListener {
+        fun onItemClick(address: AddressEntity)
+    }
+
 }

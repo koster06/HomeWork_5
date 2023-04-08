@@ -1,10 +1,12 @@
 package com.example.homework_5
 
+import Constants.Constants.TEST
 import Constants.Constants.USERID
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import com.bumptech.glide.Glide
 import com.example.homework_5.databinding.ActivityUserDetailsBinding
 import entities.AddressEntity
@@ -12,22 +14,14 @@ import entities.UserAddressEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import viewmodels.MyViewModel
 
 class UserDetailsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityUserDetailsBinding
     private lateinit var userRepository: UserRepository
-    private val addresses = listOf(
-        AddressEntity(0, "ул. Ленина, 10", "Москва", "Россия", "ZZZZZZ"),
-        AddressEntity(0, "ул. Пушкина, 5", "Санкт-Петербург", "Россия", "Cr5677o"),
-        AddressEntity(0, "ул. Кирова, 20", "Новосибирск", "Россия", "123X8IO"),
-        AddressEntity(0, "пр. Мира, 1", "Минск", "Беларусь", "220001"),
-        AddressEntity(0, "ул. Лермонтова, 15а", "Екатеринбург", "Китай", "Cr5677o"),
-        AddressEntity(0, "str. Appolon, 2", "L.A", "USA", "903XPZO",),
-        AddressEntity(0, "str. Love, 22", "Brooklin", "USA", "1YU9PYO",),
-        AddressEntity(0, "ул. Дураков, 9", "Слуцк", "Беларусь", "224600",),
-        AddressEntity(0, "ул. Лукашенки-КГБ, 666", "Лида", "Беларусь", "226777",)
-    )
+    private val myViewModel: MyViewModel by viewModels()
+    private val fragment = AddressListFragment()
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,18 +30,11 @@ class UserDetailsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val userId = intent.getIntExtra(USERID, -1)
-        Log.i("test", "id: $userId")
 
         userRepository = UserRepository(application)
 
-        with(binding) {
-            button4.setOnClickListener {
-                val address = addresses.get(getRandomNumber())
-                etPersonStreet.setText(address.street)
-                etPersonCity.setText(address.city)
-                etPersonState.setText(address.state)
-                etPersonZip.setText(address.zip)
-            }
+        binding.button4.setOnClickListener {
+            showAddresses()
         }
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -83,8 +70,35 @@ class UserDetailsActivity : AppCompatActivity() {
                 }
             }
         }
+        myViewModel.messageForActivity.observe(this){
+            with(binding) {
+                Log.i(TEST, it.city)
+                etPersonStreet.setText(it.street)
+                etPersonCity.setText(it.city)
+                etPersonState.setText(it.state)
+                etPersonZip.setText(it.zip)
+            }
+        }
+        myViewModel.messageForCloseFragment.observe(this){
+            if (it){
+                supportFragmentManager.beginTransaction().apply {
+                    setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.fade_in, R.anim.fade_out)
+                    remove(fragment)
+                    addToBackStack(null)
+                    commit()
+                }
+            }
+        }
+
     }
-    private fun getRandomNumber(): Int {
-        return (0..8).random()
+
+    private fun showAddresses() {
+        supportFragmentManager.beginTransaction().apply {
+            setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.fade_in, R.anim.fade_out)
+            replace(R.id.fragment_container, fragment)
+            addToBackStack(null)
+            commit()
+        }
     }
+
 }

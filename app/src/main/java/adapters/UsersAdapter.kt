@@ -55,7 +55,6 @@ class UsersAdapter : ListAdapter<UserEntity, UsersAdapter.Holder>(Comparator()) 
                     val user = getItem(position)
                     val context = itemView.context
                     val intent = Intent(context, UserDetailsActivity::class.java).apply {
-                        // передаем id пользователя на новый экран
                         putExtra(USERID, user.id)
                     }
                     context.startActivity(intent)
