@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.homework_5.databinding.ActivityUserDetailsBinding
 import entities.AddressEntity
@@ -35,7 +36,7 @@ class UserDetailsActivity : AppCompatActivity() {
         userRepository = UserRepository(application)
 
         binding.button4.setOnClickListener {
-            showAddresses()
+            showAddresses(fragment)
         }
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -69,11 +70,13 @@ class UserDetailsActivity : AppCompatActivity() {
                         }
                     }
                 }
+                button2.setOnClickListener {
+                    showAddresses(fragment2)
+                }
             }
         }
         myViewModel.messageForActivity.observe(this){
             with(binding) {
-                Log.i(TEST, it.city)
                 etPersonStreet.setText(it.street)
                 etPersonCity.setText(it.city)
                 etPersonState.setText(it.state)
@@ -93,10 +96,10 @@ class UserDetailsActivity : AppCompatActivity() {
 
     }
 
-    private fun showAddresses() {
+    private fun showAddresses(fragment:Fragment) {
         supportFragmentManager.beginTransaction().apply {
             setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.fade_in, R.anim.fade_out)
-            replace(R.id.fragment_container, fragment2)
+            replace(R.id.fragment_container, fragment)
             addToBackStack(null)
             commit()
         }

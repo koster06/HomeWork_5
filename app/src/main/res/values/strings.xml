@@ -24,6 +24,7 @@
     <string name="zip">A100Z8</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="button2">Show Users With Their Addresses</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello Message fragment</string>
 </resources>

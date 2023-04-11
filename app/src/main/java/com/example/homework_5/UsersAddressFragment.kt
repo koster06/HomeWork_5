@@ -26,7 +26,6 @@ class UsersAddressFragment: Fragment() {
     private lateinit var adapter: UsersAddressAdapter
     lateinit var addressAdapter: AddressAdapter
     private lateinit var userRepository: UserRepository
-    private val result = mutableMapOf<UserEntity, MutableList<AddressEntity>>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,7 +40,6 @@ class UsersAddressFragment: Fragment() {
 
         userRepository = UserRepository(requireActivity().application)
         with(userRepository) {
-            //val result = mutableMapOf<UserEntity, MutableList<String>>()
             CoroutineScope(Dispatchers.IO).launch {
                 val userAddresses = getUsersAndAddresses()
                 addressAdapter = AddressAdapter(object : AddressAdapter.OnItemClickListener {
@@ -51,47 +49,8 @@ class UsersAddressFragment: Fragment() {
                 adapter = UsersAddressAdapter(userAddresses)
                 usersAddressRecyclerView.adapter = adapter
             }
-
-
-//            userAddresses.observe(viewLifecycleOwner) { userAddressList ->
-//                lifecycleScope.launch {
-//                    userAddressList?.forEach { userAddress ->
-//                        val user = getUserById(userAddress.userId)
-//                        val address = getAddressById(userAddress.addressId)
-//                        Log.d(TEST, "addressId: ${userAddress.addressId}")
-//                        Log.d(TEST, "User: ${user?.first_name}, Address: $address")
-//                        if (user != null && address != null) {
-//                            if (!result.containsKey(user)) {
-//                                result[user] = mutableListOf(address)
-//                                Log.d(TEST, "Result: $result")
-//
-//                            } else {
-//                                result[user]?.add(address)
-//                                Log.d(TEST, "Result 2: $result")
-//                            }
-//                        }
-//                    }
-//
-
-//
-//                }
-//            }
         }
 
         return view
     }
-
-    // Заглушечный адаптер
-    private class PlaceholderAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
-            return object : RecyclerView.ViewHolder(itemView) {}
-        }
-
-        override fun getItemCount() = 1
-
-        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {}
-    }
-
-
 }
