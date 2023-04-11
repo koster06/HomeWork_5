@@ -15,8 +15,8 @@ interface AddressDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllAddresses(addresses: List<AddressEntity>)
 
-    @Query("SELECT * FROM addresses WHERE id = :id")
-    fun getAddressById(id: Int): LiveData<AddressEntity>
+    @Query("SELECT * FROM addresses WHERE address_id = :id")
+    fun getAddressById(id: Int): AddressEntity?
 
     @Query("SELECT * FROM addresses WHERE city = :city")
     fun getAddressesByCity(city: String): LiveData<List<AddressEntity>>

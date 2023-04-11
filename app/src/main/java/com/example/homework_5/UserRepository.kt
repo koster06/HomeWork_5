@@ -6,17 +6,20 @@ import database.MyDatabase
 import entities.AddressEntity
 import entities.UserAddressEntity
 import entities.UserEntity
+import entities.UserWithAddressEntity
 import interfaces.AddressDao
 import interfaces.UserAddressDao
 import interfaces.UserDao
+import interfaces.UserWithAddressDao
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class UserRepository(application: Application) {
 
     private val userDao: UserDao = MyDatabase.getInstance(application).userDao()
     private val addressDao: AddressDao = MyDatabase.getInstance(application).addressDao()
     private val userAddressDao: UserAddressDao = MyDatabase.getInstance(application).userAddressDao()
-
-    // Методы для работы с таблицей пользователей
+    private val userWithAddressDao: UserWithAddressDao = MyDatabase.getInstance(application).userWithAddressDao()
 
     fun getAllUsers(): LiveData<List<UserEntity>> {
         return userDao.getAll()
@@ -26,8 +29,8 @@ class UserRepository(application: Application) {
         return userDao.getUserByEmail(email)
     }
 
-    suspend fun getUserById(id: Int): UserEntity? {
-        return userDao.getUserById(id)
+    suspend fun getUserById(id: Int): UserEntity? = withContext(Dispatchers.IO) {
+        userDao.getUserById(id)
     }
 
     fun addUser(user: UserEntity) {
@@ -55,16 +58,24 @@ class UserRepository(application: Application) {
         return addressDao.getAll()
     }
 
-    suspend fun getAddressById(id: Int): LiveData<AddressEntity> {
-        return addressDao.getAddressById(id)
+    suspend fun getAddressById(id: Int): AddressEntity? = withContext(Dispatchers.IO) {
+        addressDao.getAddressById(id)
     }
 
-    suspend fun getAllUserAddresses(): LiveData<List<UserAddressEntity>> {
+    fun getAllUserAddresses(): LiveData<List<UserAddressEntity>> {
         return userAddressDao.getAll()
     }
 
     suspend fun addUserAddress(userAddressEntity: UserAddressEntity) {
         userAddressDao.insert(userAddressEntity)
+    }
+
+//    fun getUsersWithAddresses(name:String): UserWithAddressEntity {
+//        return userWithAddressDao.getUsersWithAddresses(name)
+//    }
+
+    suspend fun getUsersAndAddresses(): List<UserWithAddressEntity> {
+        return userWithAddressDao.getUsersWithAddresses()
     }
 
 }

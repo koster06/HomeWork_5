@@ -22,6 +22,7 @@ class UserDetailsActivity : AppCompatActivity() {
     private lateinit var userRepository: UserRepository
     private val myViewModel: MyViewModel by viewModels()
     private val fragment = AddressListFragment()
+    private val fragment2 = UsersAddressFragment()
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,8 +84,8 @@ class UserDetailsActivity : AppCompatActivity() {
             if (it){
                 supportFragmentManager.beginTransaction().apply {
                     setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.fade_in, R.anim.fade_out)
-                    remove(fragment)
-                    addToBackStack(null)
+                    remove(fragment2)
+                    //addToBackStack(null)
                     commit()
                 }
             }
@@ -95,7 +96,7 @@ class UserDetailsActivity : AppCompatActivity() {
     private fun showAddresses() {
         supportFragmentManager.beginTransaction().apply {
             setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.fade_in, R.anim.fade_out)
-            replace(R.id.fragment_container, fragment)
+            replace(R.id.fragment_container, fragment2)
             addToBackStack(null)
             commit()
         }

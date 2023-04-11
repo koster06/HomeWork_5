@@ -1,7 +1,6 @@
 package adapters
 
 import Constants.Constants.USERID
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ import com.bumptech.glide.Glide
 import com.example.homework_5.UserDetailsActivity
 import com.example.homework_5.databinding.ItemUserBinding
 import entities.UserEntity
-import retrofit.User
 
 
 class UsersAdapter : ListAdapter<UserEntity, UsersAdapter.Holder>(Comparator()) {
@@ -24,7 +22,6 @@ class UsersAdapter : ListAdapter<UserEntity, UsersAdapter.Holder>(Comparator()) 
         private val binding = ItemUserBinding.bind(view)
         private val avatar: ImageView = binding.avatar
 
-        @SuppressLint("SetTextI18n")
         fun bind(user: UserEntity) = with(binding){
             name.text = user.first_name
             email.text = user.email

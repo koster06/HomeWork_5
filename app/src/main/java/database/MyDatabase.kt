@@ -10,6 +10,7 @@ import entities.UserEntity
 import interfaces.AddressDao
 import interfaces.UserAddressDao
 import interfaces.UserDao
+import interfaces.UserWithAddressDao
 
 @Database(
     entities = [UserEntity::class, AddressEntity::class, UserAddressEntity::class],
@@ -22,6 +23,8 @@ abstract class MyDatabase : RoomDatabase() {
     abstract fun addressDao(): AddressDao
 
     abstract fun userAddressDao(): UserAddressDao
+
+    abstract fun userWithAddressDao(): UserWithAddressDao
 
     companion object {
         @Volatile

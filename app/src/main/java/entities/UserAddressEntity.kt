@@ -6,13 +6,13 @@ import androidx.room.*
     foreignKeys = [
         ForeignKey(
             entity = UserEntity::class,
-            parentColumns = ["id"],
+            parentColumns = ["user_id"],
             childColumns = ["user_id"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = AddressEntity::class,
-            parentColumns = ["id"],
+            parentColumns = ["address_id"],
             childColumns = ["address_id"],
             onDelete = ForeignKey.CASCADE
         )

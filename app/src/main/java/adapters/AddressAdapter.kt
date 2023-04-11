@@ -1,6 +1,8 @@
 package adapters
 
+import Constants.Constants.TEST
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.homework_5.databinding.AddressItemBinding
 import entities.AddressEntity
 
-class AddressAdapter(private val listener: OnItemClickListener): ListAdapter<AddressEntity, AddressAdapter.Holder>(Comparator()) {
+class AddressAdapter(private val listener: OnItemClickListener):
+    ListAdapter<AddressEntity, AddressAdapter.Holder>(Comparator()) {
 
     class Comparator: DiffUtil.ItemCallback<AddressEntity>()  {
         override fun areItemsTheSame(oldItem: AddressEntity, newItem: AddressEntity): Boolean {
@@ -50,7 +53,7 @@ class AddressAdapter(private val listener: OnItemClickListener): ListAdapter<Add
         }
     }
 
-    override fun onBindViewHolder(holder: AddressAdapter.Holder, position: Int) {
+    override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.bind(getItem(position))
     }
 

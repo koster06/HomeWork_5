@@ -1,7 +1,9 @@
 package com.example.homework_5
 
+import Constants.Constants.TEST
 import adapters.AddressAdapter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,7 +38,7 @@ class AddressListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_address_list, container, false)
-
+        Log.d(TEST, TEST)
         userRepository = UserRepository(requireActivity().application)
         addressRecyclerView = view.findViewById(R.id.address_recycler_view)
         addressRecyclerView.layoutManager = LinearLayoutManager(context)

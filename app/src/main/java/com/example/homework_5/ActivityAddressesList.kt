@@ -30,11 +30,7 @@ class ActivityAddressesList : AppCompatActivity() {
 
         adapterAddress = AddressAdapter(object : AddressAdapter.OnItemClickListener {
             override fun onItemClick(address: AddressEntity) {
-//                val sharedPreferences = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE)
-//                val editor = sharedPreferences.edit()
-//                val addressJson = Gson().toJson(address)
-//                editor.putString(ADDRESS_KEY, addressJson)
-//                editor.apply()
+                saveToSharedPref(address)
             }
         })
         binding.apply {
@@ -48,16 +44,26 @@ class ActivityAddressesList : AppCompatActivity() {
             val addresses = userRepository.getAllAddresses()
             runOnUiThread {
                 addresses.observe(this@ActivityAddressesList) { addressList ->
+                    Log.i(TEST,"${addressList.size}")
                     adapterAddress.submitList(addressList)
                 }
             }
         }
 
-//        val context = applicationContext
-//        val sharedPreferences = context.getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE)
-//        val addressJson = sharedPreferences.getString(ADDRESS_KEY, null)
-//        val address: AddressEntity? = Gson().fromJson(addressJson, AddressEntity::class.java)
+        val context = applicationContext
+        val sharedPreferences = context.getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE)
+        val addressJson = sharedPreferences.getString(ADDRESS_KEY, null)
+        val address: AddressEntity? = Gson().fromJson(addressJson, AddressEntity::class.java)
     }
+
+    private fun saveToSharedPref(address:AddressEntity){
+        val sharedPreferences = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        val addressJson = Gson().toJson(address)
+        editor.putString(ADDRESS_KEY, addressJson)
+        editor.apply()
+    }
+
 }
 // DESCRIPTION
 //--------------------------------------------------------------------------------------------------
