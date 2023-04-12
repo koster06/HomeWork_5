@@ -1,197 +1,170 @@
 package com.example.homework_5
 
-import android.app.DatePickerDialog
-import android.content.Context
-import android.content.Intent
+
+import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
-import android.view.MenuItem
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.view.GravityCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import com.example.homework_5.databinding.ActivityMainBinding
-import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
+import com.bumptech.glide.Glide
+import com.example.homework_5.databinding.ActivityMain3Binding
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.functions.BiFunction
+import io.reactivex.rxjava3.schedulers.Schedulers
 
-class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityMainBinding
-    var userList = kotlin.collections.ArrayList<UserNext>()
-    lateinit var adapter : UserAdapter
-    //private val adapterNextView = UserNextAdapter()
-    private val imageIdList = listOf ( //и заполнения xml разметки recyclerView
-        R.drawable.bird1,
-        R.drawable.bird2,
-        R.drawable.bird3,
-        R.drawable.bird4,
-        R.drawable.bird5,
-        R.drawable.bird6,
-        R.drawable.bird7,
-        R.drawable.bird8,
-        R.drawable.bird9
+    lateinit var binding: ActivityMain3Binding
+    private var disposable: Disposable? = null
+    private val urls = listOf(
+        "https://cdn.pixabay.com/photo/2015/11/16/16/28/bird-1045954_1280.jpg",
+        "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
+        "https://cdn.pixabay.com/photo/2014/09/14/18/04/dandelion-445228_1280.jpg",
+        "https://cdn.pixabay.com/photo/2016/04/18/22/05/seashells-1337565_1280.jpg"
     )
-    private var index = 0
-
+    val urlss = arrayOf(
+        "https://cdn.pixabay.com/photo/2017/05/31/18/38/sea-2361247_1280.jpg",
+        "https://cdn.pixabay.com/photo/2023/03/17/14/46/red-tailed-black-cockatoo-7858776_1280.jpg",
+        "https://cdn.pixabay.com/photo/2019/10/30/16/19/fox-4589927_1280.jpg"
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMain3Binding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-        setSupportActionBar(binding.toolbar)
-
-        binding.navView.setNavigationItemSelectedListener(this)
-
-        val toggle = ActionBarDrawerToggle(this, binding.drawerLayout,
-            binding.toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close)
-
-        binding.drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, MessageFragment.newInstance())
-            binding.navView.setCheckedItem(R.id.nav_message)
-        }
-
-        val myCalendar = Calendar.getInstance()
-        val datePicker = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-            myCalendar.set(Calendar.YEAR, year)
-            myCalendar.set(Calendar.MONTH, month)
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-            writeLabel(myCalendar)
-        }
-
-        binding.etDate.setOnClickListener{
-            DatePickerDialog(this, datePicker, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show()
-        }
-
-        with(binding) {
-            etDate.addTextChangedListener(textWatcher)
-            editTextPersonName.addTextChangedListener(textWatcher)
-            editTextPersonName2.addTextChangedListener(textWatcher)
-            editTextPhone.addTextChangedListener(textWatcher)
-            editTextNumber.addTextChangedListener(textWatcher)
-        }
-
-        adapter = UserAdapter(object : AdapterListener{
-            override fun removeUser(user: User) {      //this function more safe, cos I didn't have any issues with this
-                val indexToDelete = adapter.userList.indexOfFirst { it.id == user.id }
-                Log.d("test", "Into del: $indexToDelete")
-                adapter.userList.removeAt(indexToDelete)
-                adapter.notifyDataSetChanged()
+        val imageViewList = listOf(
+            with(binding) {
+                imageView1
+                imageView2
+                imageView3
             }
+        )
+
+        val disposable1 = Observable.create<String> { emitter ->    /* CREATE */
+            emitter.onNext(urls[0])                                 /* map */
+            emitter.onComplete()
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .map { url ->
+                val drawable = Glide.with(this)
+                    .load(url)
+                    .submit()
+                    .get()
+                drawable
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { drawable ->
+                binding.imageView.setImageDrawable(drawable)
+            }
+        Log.d("test", "1st ended")
+
+
+        val disposable2 = Observable.just(urls)               /* JUST */
+            .subscribeOn(Schedulers.io())                     /* map */
+            .flatMapIterable { it }
+            .map { url ->
+                Glide.with(this)
+                    .asBitmap()
+                    .load(url)
+                    .submit()
+                    .get()
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { bitmap ->
+                binding.imageView3.setImageBitmap(bitmap)
+            }
+        Log.d("test", "2nd ended")
+
+        val observable1 = Observable.just(urls[1])         /* JUST but loading for 2 imageView */
+            .subscribeOn(Schedulers.io())                  /* zip */
+            .map { Glide.with(this).asBitmap().load(it).submit().get() }
+            .observeOn(AndroidSchedulers.mainThread())
+
+        val observable2 = Observable.just(urls[2])
+            .subscribeOn(Schedulers.io())
+            .map { Glide.with(this).asBitmap().load(it).submit().get() }
+            .observeOn(AndroidSchedulers.mainThread())
+        Log.d("test", "3rd starting")
+        val disposable3 = Observable.zip(
+            observable1,
+            observable2, BiFunction<Bitmap, Bitmap, Pair<Bitmap, Bitmap>>
+            { bitmap1, bitmap2 -> Pair(bitmap1, bitmap2)
         })
-        init()
-    }
-
-// functions
-//--------------------------------------------------------------------------------------------------
-
-    override fun onBackPressed() {
-        with(binding) {
-            if (drawerLayout.isDrawerOpen(GravityCompat.START))
-                drawerLayout.closeDrawer(GravityCompat.START)
-            else super.onBackPressed()
-        }
-    }
-
-    private fun View.hideKeyboard() {
-        val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputManager.hideSoftInputFromWindow(windowToken, 0)
-    }
-
-    private val textWatcher: TextWatcher = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            val nameFilled = binding.editTextPersonName.text.toString()
-            val surnameFilled = binding.editTextPersonName2.text.toString()
-            val phoneFilled = binding.editTextPhone.text.toString()
-            val ageFilled = binding.editTextNumber.text.toString()
-            val birthday = binding.etDate.text.toString()
-            with(binding){
-                button.setEnabled(!nameFilled.isEmpty()
-                        && !surnameFilled.isEmpty()
-                        && !phoneFilled.isEmpty()
-                        && !ageFilled.isEmpty()
-                        && !birthday.isEmpty())
+            .subscribe { pair ->
+                binding.imageView4.setImageBitmap(pair.first)
+                binding.imageView5.setImageBitmap(pair.second)
             }
-        }
 
-        override fun afterTextChanged(s: Editable) {}
-    }
-
-    private fun writeLabel(myCalendar: Calendar) {
-        val myFormat = "dd-MMMM-yyyy"
-        val simpleDF = SimpleDateFormat(myFormat)
-        binding.etDate.setText((simpleDF.format(myCalendar.time)))
-    }
-
-    private fun init() {
-        binding.apply {
-            recyclerConteiner.layoutManager = GridLayoutManager(this@MainActivity, 1)
-            recyclerConteiner.adapter = adapter
-            button.setOnClickListener {
-                if (index>8) index = 0
-                val user = User(imageIdList[index],
-                    editTextPersonName.text.toString(),
-                    editTextPersonName2.text.toString(),
-                    editTextPhone.text.toString(),
-                    editTextNumber.text.toString(),
-                    etDate.text.toString()
-                    )
-                val userNext = UserNext(
-                    imageIdList[index],
-                    editTextPersonName.text.toString(),
-                )
-                userList?.add(userNext)
-                Log.d("test", "Button1: ${userList.size}")
-                adapter.addUser(user)
-                index++
-                it.hideKeyboard()
-                editTextPersonName.text = null
-                editTextPersonName2.text = null
-                editTextPhone.text = null
-                editTextNumber.text = null
-                etDate.text = null
+        val obser = Observable.fromArray(*urlss)         /* FROMARRAY */
+            .flatMap { url ->                            /* flatMap */
+                Observable.just(url)
+                    .subscribeOn(Schedulers.io())
+                    .map {
+                        Glide.with(this)
+                            .load(url)
+                            .submit()
+                            .get()
+                    }
+                    .observeOn(AndroidSchedulers.mainThread())
             }
-            button2.setOnClickListener {
-                val intent = Intent(it.context, MainActivity2::class.java)
-                intent.putParcelableArrayListExtra("user", userList)
-                startActivity(intent)
+            .toList()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { bitmaps ->
+                binding.imageView1.setImageDrawable(bitmaps[0])
+                binding.imageView2.setImageDrawable(bitmaps[1])
             }
-        }
+
+        val disposable4 = Observable.fromIterable(urls)         /* FROMITERABLE */
+            .flatMap { url ->                                   /* flatMap */
+                Observable.fromCallable {
+                    Glide.with(this)
+                        .asBitmap()
+                        .load(url)
+                        .submit()
+                        .get()
+                }
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { bitmap ->
+                when (imageViewList.indexOfFirst { it.drawable == null }) {
+                    else -> imageViewList.first { it.drawable == null }.setImageBitmap(bitmap)
+                }
+            }
+
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.nav_message) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragment_container, MessageFragment.newInstance())
-            .commit()
-        Toast.makeText(this, "To Message Fragment", Toast.LENGTH_SHORT).show()
-        binding.drawerLayout.closeDrawer(GravityCompat.START)
-        }
-        return true
+    override fun onDestroy() {
+        super.onDestroy()
+        disposable?.dispose()
     }
 }
-// DESCRIPTION
-//--------------------------------------------------------------------------------------------------
 
-/*
-Задание 6.3
-На одном из экранов реализуйте боковое меню. Пункты меню придумайте сами,
-при нажатии на пункт либо открывайте соответствующий экран или диалог покажите.
-Тут по вашему желанию.
-*/
+
+/*------------------- Description----------------
+Домашнее задание №12
+RxJava
+Задание 1. Операторы преобразования
+    Примените все операторы для генерации ссылок и загрузки картинок в ImageView (нужно сгенерировать не менее двух ссылок). ++
+
+Задание 2. Операторы объединения
+    Примените все операторы. В рамках комбинирования используйте какую-либо арифметическую функцию (соответственно, потоки должны генерировать числа).
+
+Задание 3. Операторы группирования и сортировки
+
+    Примените операторы для сортировки и отсева значений по следующим критериями:
+разделить положительные и отрицательные значения;
+выводить слова, пока их длина менее 6 символов;
+пропускать все отрицательные значения, пока не придет одно положительное;
+выводить все слова, пока не придет слово stop.
+
+Задание 4. Операторы для оптимизации
+ 	Создайте кнопку и текстовое поле. По нажатию на кнопку в нее должно записываться инкрементируемое значение, а в текстовое поле должно записываться значение, прошедшее через один из операторов оптимизации (выдержавшее какой-то интервал) . Реализуйте задание для всех операторов.
+
+Задание 5. Работа с сетью
+    Перепишите ДЗ9 с использованием RxJava
+
+ */
