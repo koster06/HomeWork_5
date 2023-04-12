@@ -1,6 +1,7 @@
 package com.example.homework_5
 
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,134 +13,110 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.functions.BiFunction
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityMain3Binding
-    private var disposable: Disposable? = null
-    private val urls = listOf(
-        "https://cdn.pixabay.com/photo/2015/11/16/16/28/bird-1045954_1280.jpg",
-        "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
-        "https://cdn.pixabay.com/photo/2014/09/14/18/04/dandelion-445228_1280.jpg",
-        "https://cdn.pixabay.com/photo/2016/04/18/22/05/seashells-1337565_1280.jpg"
-    )
-    val urlss = arrayOf(
-        "https://cdn.pixabay.com/photo/2017/05/31/18/38/sea-2361247_1280.jpg",
-        "https://cdn.pixabay.com/photo/2023/03/17/14/46/red-tailed-black-cockatoo-7858776_1280.jpg",
-        "https://cdn.pixabay.com/photo/2019/10/30/16/19/fox-4589927_1280.jpg"
-    )
+    private lateinit var binding: ActivityMain3Binding
 
+    @SuppressLint("CheckResult", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMain3Binding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val imageViewList = listOf(
-            with(binding) {
-                imageView1
-                imageView2
-                imageView3
-            }
-        )
+        val observable5 = Observable.range(1, 5)                        /* concat */
+        val observable6 = Observable.range(6, 5)
+        val concatObservable = Observable.concat(observable5, observable6)
 
-        val disposable1 = Observable.create<String> { emitter ->    /* CREATE */
-            emitter.onNext(urls[0])                                 /* map */
-            emitter.onComplete()
+        val combinedObservable = concatObservable
+            .reduce { acc: Int, value: Int -> acc + value }                         /* reduce */
+        combinedObservable.subscribe { value ->
+            binding.textView.text = "Sum of all numbers: $value"
         }
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
-            .map { url ->
-                val drawable = Glide.with(this)
-                    .load(url)
-                    .submit()
-                    .get()
-                drawable
-            }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { drawable ->
-                binding.imageView.setImageDrawable(drawable)
-            }
-        Log.d("test", "1st ended")
+/*---------------------------------------------------------------------------------------------*/
+
+        val observable1 = Observable.intervalRange(1, 5, 0, 1, TimeUnit.SECONDS)
+            .map { it.toInt() }
+            .flatMap { Observable.just(it).delay((Math.random() * 3000).toLong(), TimeUnit.MILLISECONDS) }
+
+        val observable2 = Observable.intervalRange(1, 5, 0, 1, TimeUnit.SECONDS)
+            .map { it.toInt() }
+            .flatMap { Observable.just(it).delay((Math.random() * 3000).toLong(), TimeUnit.MILLISECONDS) }
+
+        Observable.merge(observable1, observable2)                                   /* merge */
+            .buffer(2)
+            .filter { it.size == 2 }
+            .map { it.maxOrNull()!! }
+            .subscribe { binding.textView2.text = "Merged item: $it" }
+
+/*---------------------------------------------------------------------------------------------*/
+
+        val observable3 = Observable.just(1, 2, 3)
+        val observable4 = Observable.just(10, 20, 30)
+
+        Observable.zip(observable3, observable4) { t1: Int, t2: Int ->                  /* zip */
+            t1 * t2
+        }
+            .subscribe { println(it) }
+/*---------------------------------------------------------------------------------------------*/
+
+        val numbers1 = Observable.just(1, 2, 3)
+        val numbers2 = Observable.just(4, 5, 6)
+        val numbers3 = Observable.just(7, 8, 9)
+
+        Observable.combineLatest(numbers1, numbers2, numbers3) { n1, n2, n3 ->   /* combineLatest */
+            n1 * n2 + n3
+        }.subscribe { result ->
+            println("Result: $result")
+        }
+
+/*---------------------------------------------------------------------------------------------*/
+
+        val firstObservable = Observable.just("Здарова", "Ku-Ku", "Hola")
+        val secondObservable = Observable.just("Zina", "musjo", "Artifiction")
+
+        firstObservable.join(secondObservable,                                  /* join */
+            { Observable.timer(2, TimeUnit.SECONDS) },
+            { Observable.timer(1, TimeUnit.SECONDS) },
+            { s1, s2 -> "$s1 $s2" })
+            .subscribe { s -> println(s) }
+
+/*---------------------------------------------------------------------------------------------*/
+
+        val first = Observable.interval(1, TimeUnit.SECONDS)
+            .map { "First: $it" }
+            .take(3)
+
+        val second = Observable.interval(2, TimeUnit.SECONDS)
+            .map { "Second: $it" }
+            .take(2)
+
+        val third = Observable.interval(3, TimeUnit.SECONDS)
+            .map { "Third: $it" }
+            .take(1)
+
+        val sources = listOf(first, second, third)
+
+        Observable.interval(1, TimeUnit.SECONDS)
+            .take(10)
+            .switchMap { sources[it.toInt() % sources.size] }                   /* switchMap */
+            .subscribe { println(it) }
+
+/*---------------------------------------------------------------------------------------------*/
+
+        val source1 = Observable.interval(1, TimeUnit.SECONDS)
+            .map { "Source 1: $it" }
+        val source2 = Observable.interval(2, TimeUnit.SECONDS)
+            .map { "Source 2: $it" }
+        val source3 = Observable.interval(3, TimeUnit.SECONDS)
+            .map { "Source 3: $it" }
+
+        Observable.amb(listOf(source1, source2, source3))                           /* amb */
+            .take(5)
+            .subscribe { println(it) }
 
 
-        val disposable2 = Observable.just(urls)               /* JUST */
-            .subscribeOn(Schedulers.io())                     /* map */
-            .flatMapIterable { it }
-            .map { url ->
-                Glide.with(this)
-                    .asBitmap()
-                    .load(url)
-                    .submit()
-                    .get()
-            }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { bitmap ->
-                binding.imageView3.setImageBitmap(bitmap)
-            }
-        Log.d("test", "2nd ended")
-
-        val observable1 = Observable.just(urls[1])         /* JUST but loading for 2 imageView */
-            .subscribeOn(Schedulers.io())                  /* zip */
-            .map { Glide.with(this).asBitmap().load(it).submit().get() }
-            .observeOn(AndroidSchedulers.mainThread())
-
-        val observable2 = Observable.just(urls[2])
-            .subscribeOn(Schedulers.io())
-            .map { Glide.with(this).asBitmap().load(it).submit().get() }
-            .observeOn(AndroidSchedulers.mainThread())
-        Log.d("test", "3rd starting")
-        val disposable3 = Observable.zip(
-            observable1,
-            observable2, BiFunction<Bitmap, Bitmap, Pair<Bitmap, Bitmap>>
-            { bitmap1, bitmap2 -> Pair(bitmap1, bitmap2)
-        })
-            .subscribe { pair ->
-                binding.imageView4.setImageBitmap(pair.first)
-                binding.imageView5.setImageBitmap(pair.second)
-            }
-
-        val obser = Observable.fromArray(*urlss)         /* FROMARRAY */
-            .flatMap { url ->                            /* flatMap */
-                Observable.just(url)
-                    .subscribeOn(Schedulers.io())
-                    .map {
-                        Glide.with(this)
-                            .load(url)
-                            .submit()
-                            .get()
-                    }
-                    .observeOn(AndroidSchedulers.mainThread())
-            }
-            .toList()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { bitmaps ->
-                binding.imageView1.setImageDrawable(bitmaps[0])
-                binding.imageView2.setImageDrawable(bitmaps[1])
-            }
-
-        val disposable4 = Observable.fromIterable(urls)         /* FROMITERABLE */
-            .flatMap { url ->                                   /* flatMap */
-                Observable.fromCallable {
-                    Glide.with(this)
-                        .asBitmap()
-                        .load(url)
-                        .submit()
-                        .get()
-                }
-            }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { bitmap ->
-                when (imageViewList.indexOfFirst { it.drawable == null }) {
-                    else -> imageViewList.first { it.drawable == null }.setImageBitmap(bitmap)
-                }
-            }
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        disposable?.dispose()
     }
 }
 

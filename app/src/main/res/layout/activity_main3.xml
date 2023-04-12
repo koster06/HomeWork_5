@@ -16,15 +16,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/imageView4"
-            tools:srcCompat="@tools:sample/avatars"
-            style="@style/image_style" />
+        <TextView
+            android:id="@+id/textView"
+            style="@style/style_text" />
 
-        <ImageView
-            android:id="@+id/imageView2"
-            tools:srcCompat="@tools:sample/avatars"
-            style="@style/image_style" />
+        <TextView
+            android:id="@+id/textView2"
+            style="@style/style_text"/>
+
+        <TextView
+            android:id="@+id/textView3"
+            style="@style/style_text" />
 
         <ImageView
             android:id="@+id/imageView1"
