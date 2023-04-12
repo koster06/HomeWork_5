@@ -17,6 +17,7 @@
     <string name="hint_job">Job</string>
     <string name="street">ул. Ленина, 10</string>
     <string name="hint_street">street</string>
+    <string name="hint_search">Search text</string>
     <string name="hint_state">country</string>
     <string name="city">Москва</string>
     <string name="state">Россия</string>
