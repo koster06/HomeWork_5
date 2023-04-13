@@ -1,22 +1,35 @@
 package com.example.homework_5
 
 
+import adapter.UserAdapter
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.homework_5.databinding.ActivityMain3Binding
+import dataclasses.UserService
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
-import java.util.concurrent.atomic.AtomicInteger
-import io.reactivex.rxjava3.subjects.PublishSubject
-import java.util.concurrent.TimeUnit
+import io.reactivex.rxjava3.schedulers.Schedulers
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMain3Binding
-    private val atomicInt = AtomicInteger(0)
-
-
+    private lateinit var userAdapter: UserAdapter
+    private lateinit var recyclerView: RecyclerView
+    private val userService by lazy {
+        Retrofit.Builder()
+            .baseUrl("https://reqres.in/api/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            .build()
+            .create(UserService::class.java)
+    }
 
     @SuppressLint("CheckResult", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,40 +37,20 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMain3Binding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        recyclerView = findViewById(R.id.recyclerView)
+        userAdapter = UserAdapter()
+        recyclerView.adapter = userAdapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
 
-/*---------------------------------------------------------------------------------------------*/
-
-        var counter = 0
-
-        binding.button.setOnClickListener {
-            counter++
-            binding.button.text = counter.toString()
-        }
-        Observable.interval(1, TimeUnit.SECONDS)
+        userService.getUsers(2)
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                binding.textView.text = counter.toString()
-            }
-
-/*---------------------------------------------------------------------------------------------*/
-
-        val textUpdater = PublishSubject.create<Unit>()
-            textUpdater.debounce(1, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { binding.textView2.text = atomicInt.incrementAndGet().toString() }
-
-        binding.button2.setOnClickListener {
-            val newValue = atomicInt.incrementAndGet()
-            binding.button2.text = newValue.toString()
-            textUpdater.onNext(Unit)
-        }
-/*---------------------------------------------------------------------------------------------*/
-
-
-
-/*---------------------------------------------------------------------------------------------*/
-
-
+            .subscribe({
+                Log.d("test", "${it.data}")
+                userAdapter.setItems(it.data)
+            }, {
+                Toast.makeText(this, "Error loading users", Toast.LENGTH_SHORT).show()
+            })
 
     }
 }
@@ -66,12 +59,6 @@ class MainActivity : AppCompatActivity() {
 /*------------------- Description----------------
 Домашнее задание №12
 RxJava
-
-Задание 4. Операторы для оптимизации
- 	Создайте кнопку и текстовое поле. По нажатию на кнопку в нее должно записываться
- 	инкрементируемое значение, а в текстовое поле должно записываться значение, прошедшее
- 	через один из операторов оптимизации (выдержавшее какой-то интервал) .
- 	Реализуйте задание для всех операторов.
 
 Задание 5. Работа с сетью
     Перепишите ДЗ9 с использованием RxJava
