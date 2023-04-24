@@ -4,15 +4,17 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.homework_5.R
+import com.example.homework_5.databinding.UserItemBinding
 import dataclasses.User
 
-class UserAdapter() :
+class UserAdapter(private val listener: OnItemClickListener) :
     RecyclerView.Adapter<UserAdapter.ViewHolder>() {
+
+    interface OnItemClickListener {
+        fun onItemClick(userId: Int)
+    }
 
     private var items = listOf<User>()
 
@@ -23,27 +25,48 @@ class UserAdapter() :
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val imageView: ImageView = view.findViewById(R.id.imageView)
-        val nameTextView: TextView = view.findViewById(R.id.nameTextView)
-        val emailTextView: TextView = view.findViewById(R.id.emailTextView)
+        private val binding = UserItemBinding.bind(view)
+
+        @SuppressLint("SetTextI18n")
+        fun bind(user: User) = with(binding){
+            nameTextView.text = "${user.first_name} ${user.last_name}"
+            emailTextView.text = user.email
+            Glide.with(itemView.context)
+                .load(user.avatar)
+                .circleCrop()
+                .into(imageView)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.user_item, parent, false)
-        return ViewHolder(view)
+        val binding = UserItemBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding.root).apply {
+            itemView.setOnClickListener {
+
+            }
+        }
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user = items[position]
-        Glide.with(holder.itemView.context)
-            .load(user.avatar)
-            .circleCrop()
-            .into(holder.imageView)
-        holder.nameTextView.text = "${user.first_name} ${user.last_name}"
-        holder.emailTextView.text = user.email
+        holder.bind(user)
+        holder.itemView.setOnClickListener {
+            listener.onItemClick(user.id)
+        }
     }
 
     override fun getItemCount() = items.size
+
+    companion object {
+        private var instance: UserAdapter? = null
+
+        fun getInstance(listener: OnItemClickListener): UserAdapter {
+            if (instance == null) {
+                instance = UserAdapter(listener)
+            }
+            return instance!!
+        }
+    }
+
 }
