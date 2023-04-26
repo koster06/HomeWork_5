@@ -21,32 +21,47 @@ class DispatcherScope(dispatcher: CoroutineDispatcher): CoroutineScope {
     override val coroutineContext: CoroutineContext = job + dispatcher
 }
 
-fun main() {
-    val emptyScope = EmptyScope()
-    val jobScope = JobScope()
-    val dispatcherScope = DispatcherScope(Dispatchers.IO)
+fun main() = runBlocking {
+    val parentJob = Job() // parent Job
+    val parentScope = CoroutineScope(Dispatchers.Default + parentJob)
 
-    emptyScope.launch {
-        println("Empty scope: $coroutineContext")
-    }
-
-    jobScope.launch {
-        println("Job scope: $coroutineContext")
-        launch {
-            println("Child coroutine: $coroutineContext")
+    // launch
+    repeat(3) {
+        parentScope.launch {
+            println("Coroutine $it started")
+            delay(1000)
+            println("Coroutine $it finished")
         }
     }
 
-    dispatcherScope.launch {
-        println("Dispatcher scope: $coroutineContext")
+    // async
+    val deferredList = List(3) {
+        parentScope.async {
+            println("Async $it started")
+            delay(1000)
+            println("Async $it finished")
+            "Result $it" // return result
+        }
     }
 
-    Thread.sleep(1000)
+    // join
+    parentScope.launch {
+        println("Waiting for coroutines to finish...")
+        deferredList.forEach { it.join() }
+        println("All coroutines finished")
+    }
+
+    println("Main thread continues to execute")
+
+    delay(3000)
+    parentJob.cancel() // cancelling parent Job
 }
 /*
-Создайте Scope с различным набором входных параметров
-(с пустым контекстом, с Job, с Dispatcher) и создайте корутины в этом Scope,
-залогируйте объекты контекста, чтобы проверить, что будет передаваться.
-Залогируйте вложенную передачу контекста между Корутинами.
+a) Создайте несколько Корутин при помощи билдера launch и посмотрите,
+как они себя ведут в рамках родительской Корутины,
+а также залогируйте выполнение и используйте join.
+b) Создайте несколько Корутин при помощи билдера async и
+получайте результаты выполнения при помощи await.
+Реализуйте отложенный старт корутины.
 */
 
