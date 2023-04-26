@@ -1,9 +1,10 @@
 package com.example.homework_5
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import kotlin.coroutines.CoroutineContext
 
 class EmptyScope: CoroutineScope {
@@ -12,17 +13,17 @@ class EmptyScope: CoroutineScope {
 }
 
 suspend fun main() {
-    val flow = flowOf(1, 2, 3, 4, 5)
-    flow.flatMapConcat { number ->
-        flow {
+    val numbers = listOf(1, 2, 3, 4, 5) // какая же это тоска решать такие задачи...
+    val flow = flow {
+        for (number in numbers) {
             emit(number)
-            delay(100)
-            emit(number * 2)
-            delay(100)
-            emit(number * 3)
         }
     }
-        .collect { println(it) }
+
+    flow.map { it * 2 } //мапим
+        .filter { it > 5 } //фильтруем больше 5
+        .toList() // в список
+        .also { println(it) }
 }
 
 /*
