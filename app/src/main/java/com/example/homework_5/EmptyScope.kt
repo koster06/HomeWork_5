@@ -1,7 +1,9 @@
 package com.example.homework_5
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlin.coroutines.CoroutineContext
 
 class EmptyScope: CoroutineScope {
@@ -9,21 +11,21 @@ class EmptyScope: CoroutineScope {
     override val coroutineContext: CoroutineContext = job
 }
 
-fun main() = runBlocking<Unit> {
-    fun generateNumbers(multiplier: Int) = flow {
-        for (i in 1..5) {
-            emit(i * multiplier)
+suspend fun main() {
+    val flow = flowOf(1, 2, 3, 4, 5)
+    flow.flatMapConcat { number ->
+        flow {
+            emit(number)
+            delay(100)
+            emit(number * 2)
+            delay(100)
+            emit(number * 3)
         }
     }
-
-    generateNumbers(10).collect {
-        println("Received value: $it")
-    }
+        .collect { println(it) }
 }
 
 /*
-a) Создайте Flow, который не принимает никаких параметров и выводит в консоль получение значения.
-b) Создайте Flow, который принимает что-то в свои параметры, и используйте это при генерации данных
-(например, передайте число, которое будет множителем для генерируемых чисел).
+Создайте три различных варианта Flow с промежуточными и терминальными операторами на ваш выбор.
 */
 
