@@ -8,38 +8,35 @@ class EmptyScope: CoroutineScope {
     override val coroutineContext: CoroutineContext = job
 }
 
-class JobScope: CoroutineScope {
-    private val parentJob = Job()
-    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        println("Caught exception: $throwable")
+fun main() {
+    val handler = CoroutineExceptionHandler { _, exception ->
+        println("Caught exception: $exception")
     }
-    override val coroutineContext: CoroutineContext = parentJob + Dispatchers.Default + coroutineExceptionHandler
-}
+    val parentJob = Job()
+    val parentScope = CoroutineScope(parentJob + handler)
 
-class DispatcherScope(dispatcher: CoroutineDispatcher): CoroutineScope {
-    private val job = Job()
-    override val coroutineContext: CoroutineContext = job + dispatcher
-}
+    parentScope.launch {
+        println("Parent coroutine started")
+        val childJob = Job(parent = coroutineContext[Job])
+        val childScope = CoroutineScope(coroutineContext + childJob + handler)
 
-fun main() = runBlocking {
-    val job = launch(start = CoroutineStart.LAZY) {
-        println("Coroutine started")
-        delay(1000)
-        println("Coroutine finished")
+        childScope.launch {
+            println("Child coroutine started")
+            val grandChildJob = Job(parent = coroutineContext[Job])
+            val grandChildScope = CoroutineScope(coroutineContext + grandChildJob + handler)
+
+            grandChildScope.launch {
+                println("Grandchild coroutine started")
+                throw Exception("Exception from grandchild coroutine")
+            }
+        }
     }
 
-    println("Main thread continues to execute")
-    delay(2000)
-
-    job.start()
-    job.join()
+    Thread.sleep(5000)
+    parentJob.cancel()
 }
+
 /*
-a) Создайте несколько Корутин при помощи билдера launch и посмотрите,
-как они себя ведут в рамках родительской Корутины,
-а также залогируйте выполнение и используйте join.
-b) Создайте несколько Корутин при помощи билдера async и
-получайте результаты выполнения при помощи await.
-Реализуйте отложенный старт корутины.
+Создайте иерархию Корутин и посмотрите, как будет передаваться эксепшен в этой цепочке.
 */
 
