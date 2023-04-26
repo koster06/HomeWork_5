@@ -1,31 +1,27 @@
 package com.example.homework_5
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlin.coroutines.CoroutineContext
 
 class EmptyScope: CoroutineScope {
     private val job = Job()
     override val coroutineContext: CoroutineContext = job
+
+    val sharedFlowWithBuffer = MutableSharedFlow<Int>(replay = 0, extraBufferCapacity = 1) //с буфером в 1 элемент
+
+    val sharedFlowOnlyBuffer = MutableSharedFlow<Int>(replay = 0, onBufferOverflow = BufferOverflow.DROP_OLDEST) //только с буфером
+
+    val sharedFlowWithCacheAndBuffer = MutableSharedFlow<Int>(replay = 10, extraBufferCapacity = 100, onBufferOverflow = BufferOverflow.DROP_LATEST)
+//кэш на 10 и буфер на 100 эл.
+
+
 }
 
-suspend fun main() = runBlocking {
-    val channel = Channel<Int>()
-    launch {
-        var i = 0
-        while (true) {
-            delay(100)
-            channel.send(i++)
-        }
-    }
-    val flow = channel.consumeAsFlow()
-    flow.take(5)
-        .collect { println(it) }
-}
 
 /*
-Создайте три различных варианта Flow с промежуточными и терминальными операторами на ваш выбор.
+Создайте SharedFlow с различными настройками
+(с буфером и кэшем, только с буфером, используйте различные стратегии при заполнении буфера).
 */
 
