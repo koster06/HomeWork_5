@@ -8,35 +8,23 @@ class EmptyScope: CoroutineScope {
     override val coroutineContext: CoroutineContext = job
 }
 
-fun main() {
-    val handler = CoroutineExceptionHandler { _, exception ->
-        println("Caught exception: $exception")
-    }
-    val parentJob = Job()
-    val parentScope = CoroutineScope(parentJob + handler)
+fun main() = runBlocking {
+    println("Main coroutine started")
 
-    parentScope.launch {
-        println("Parent coroutine started")
-        val childJob = Job(parent = coroutineContext[Job])
-        val childScope = CoroutineScope(coroutineContext + childJob + handler)
-
-        childScope.launch {
+    val deferredResult = coroutineScope {
+        async {
             println("Child coroutine started")
-            val grandChildJob = Job(parent = coroutineContext[Job])
-            val grandChildScope = CoroutineScope(coroutineContext + grandChildJob + handler)
-
-            grandChildScope.launch {
-                println("Grandchild coroutine started")
-                throw Exception("Exception from grandchild coroutine")
-            }
+            delay(1000)
+            println("Child coroutine finished")
+            42
         }
     }
 
-    Thread.sleep(5000)
-    parentJob.cancel()
+    println("Result is ${deferredResult.await()}")
+    println("Main coroutine finished")
 }
 
 /*
-Создайте иерархию Корутин и посмотрите, как будет передаваться эксепшен в этой цепочке.
+Используйте различные варианты создания Корутин: coroutineScope, withContext, runBlocking.
 */
 
