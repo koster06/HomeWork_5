@@ -22,39 +22,17 @@ class DispatcherScope(dispatcher: CoroutineDispatcher): CoroutineScope {
 }
 
 fun main() = runBlocking {
-    val parentJob = Job() // parent Job
-    val parentScope = CoroutineScope(Dispatchers.Default + parentJob)
-
-    // launch
-    repeat(3) {
-        parentScope.launch {
-            println("Coroutine $it started")
-            delay(1000)
-            println("Coroutine $it finished")
-        }
-    }
-
-    // async
-    val deferredList = List(3) {
-        parentScope.async {
-            println("Async $it started")
-            delay(1000)
-            println("Async $it finished")
-            "Result $it" // return result
-        }
-    }
-
-    // join
-    parentScope.launch {
-        println("Waiting for coroutines to finish...")
-        deferredList.forEach { it.join() }
-        println("All coroutines finished")
+    val job = launch(start = CoroutineStart.LAZY) {
+        println("Coroutine started")
+        delay(1000)
+        println("Coroutine finished")
     }
 
     println("Main thread continues to execute")
+    delay(2000)
 
-    delay(3000)
-    parentJob.cancel() // cancelling parent Job
+    job.start()
+    job.join()
 }
 /*
 a) Создайте несколько Корутин при помощи билдера launch и посмотрите,
