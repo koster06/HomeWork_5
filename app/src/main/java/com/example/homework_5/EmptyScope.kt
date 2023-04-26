@@ -11,16 +11,12 @@ class EmptyScope: CoroutineScope {
 fun main() = runBlocking {
     println("Main coroutine started")
 
-    val deferredResult = coroutineScope {
-        async {
-            println("Child coroutine started")
-            delay(1000)
-            println("Child coroutine finished")
-            42
-        }
+    withContext(Dispatchers.IO) {
+        println("Coroutine with IO context started")
+        delay(1000)
+        println("Coroutine with IO context finished")
     }
 
-    println("Result is ${deferredResult.await()}")
     println("Main coroutine finished")
 }
 
