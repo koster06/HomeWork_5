@@ -10,13 +10,13 @@ class EmptyScope: CoroutineScope {
 }
 
 fun main() = runBlocking<Unit> {
-    val flow = flow {
+    fun generateNumbers(multiplier: Int) = flow {
         for (i in 1..5) {
-            emit(i)
+            emit(i * multiplier)
         }
     }
 
-    flow.collect {
+    generateNumbers(10).collect {
         println("Received value: $it")
     }
 }
