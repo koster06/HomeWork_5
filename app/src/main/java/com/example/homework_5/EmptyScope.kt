@@ -11,10 +11,10 @@ class EmptyScope: CoroutineScope {
 fun main() = runBlocking {
     println("Main coroutine started")
 
-    withContext(Dispatchers.IO) {
-        println("Coroutine with IO context started")
+    launch {
+        println("Child coroutine started")
         delay(1000)
-        println("Coroutine with IO context finished")
+        println("Child coroutine finished")
     }
 
     println("Main coroutine finished")
