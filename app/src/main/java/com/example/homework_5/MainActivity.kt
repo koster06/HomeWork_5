@@ -16,9 +16,15 @@ import dataclasses.User
 import dataclasses.UserService
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import kotlin.coroutines.CoroutineContext
 
 class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
 
@@ -94,14 +100,13 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
                     .commit()
             }
     }
+
 }
 
 
 /*------------------- Description----------------
-Домашнее задание №12
-RxJava
+Домашнее задание №13
 
-Задание 5. Работа с сетью
-    Перепишите ДЗ9 с использованием RxJava
+
 
  */
