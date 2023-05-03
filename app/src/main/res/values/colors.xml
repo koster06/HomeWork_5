@@ -8,4 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="my_header">#EF8383</color>
+    <color name="fragment_background">#90000000</color>
+    <color name="grey_300">#9FCAF4</color>
 </resources>
