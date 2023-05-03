@@ -9,6 +9,8 @@ import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.homework_5.databinding.ActivityMain3Binding
@@ -29,6 +31,7 @@ import kotlin.coroutines.CoroutineContext
 class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
 
     private lateinit var binding: ActivityMain3Binding
+    private val viewModel: UserViewModel by viewModels()
     private lateinit var userAdapter: UserAdapter
     private lateinit var recyclerView: RecyclerView
     private val userService by lazy {
@@ -40,26 +43,20 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
             .create(UserService::class.java)
     }
 
-    @SuppressLint("CheckResult", "SetTextI18n")
+    @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMain3Binding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        recyclerView = findViewById(R.id.recyclerView)
+//        recyclerView = findViewById(R.id.recyclerView)
         userAdapter = UserAdapter.getInstance(this)
-        recyclerView.adapter = userAdapter
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = userAdapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
-        userService.getUsers(2)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                Log.d("test", "${it.data}")
-                userAdapter.setItems(it.data)
-            }, {
-                Toast.makeText(this, "Error loading users", Toast.LENGTH_SHORT).show()
-            })
+        viewModel.getUsers().observe(this) { users ->
+            userAdapter.setItems(users)
+        }
 
         binding.floatingActionButton.setOnClickListener {
             addUser()

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.homework_5.databinding.UserItemBinding
 import dataclasses.User
+import dataclasses.UserResponse
 
 class UserAdapter(private val listener: OnItemClickListener) :
     RecyclerView.Adapter<UserAdapter.ViewHolder>() {
@@ -19,8 +20,8 @@ class UserAdapter(private val listener: OnItemClickListener) :
     private var items = listOf<User>()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setItems(items: List<User>) {
-        this.items = items
+    fun setItems(items: UserResponse) {
+        this.items = items.data
         notifyDataSetChanged()
     }
 
