@@ -54,7 +54,11 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
         binding.recyclerView.adapter = userAdapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
-        viewModel.getUsers().observe(this) { users ->
+//        viewModel.getUsers().observe(this) { users ->
+//            userAdapter.setItems(users)
+//        }
+
+        viewModel.users.observe(this) { users ->
             userAdapter.setItems(users)
         }
 

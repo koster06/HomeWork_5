@@ -35,5 +35,9 @@ class UserRepository {
         return data
     }
 
+    suspend fun getUsers1(): UserResponse {
+        return userService.getUsers1(1).body()!!
+    }
+
 }
 
