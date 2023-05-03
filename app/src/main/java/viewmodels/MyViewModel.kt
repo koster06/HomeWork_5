@@ -7,10 +7,15 @@ import androidx.lifecycle.MutableLiveData
 import com.example.homework_5.UserRepository
 import entities.AddressEntity
 import entities.UserEntity
+import javax.inject.Inject
 
-class MyViewModel(application: Application) : AndroidViewModel(application) {
+
+class MyViewModel @Inject constructor(
+    application: Application
+) : AndroidViewModel(application) {
 
     private val userRepository: UserRepository = UserRepository(application)
+
     val messageForActivity: MutableLiveData<AddressEntity> by lazy {
         MutableLiveData<AddressEntity>()
     }
@@ -29,10 +34,6 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
 
     fun deleteUser(user: UserEntity) {
         userRepository.deleteUser(user)
-    }
-
-    fun updateUser(user: UserEntity) {
-        userRepository.updateUser(user)
     }
 
     fun getAllAddresses(): LiveData<List<AddressEntity>> {

@@ -3,8 +3,6 @@ package retrofit
 import retrofit2.http.*
 
 interface UserService {
-//    @GET("users")
-//    suspend fun getUsers(@Query("page") page: Int): Response<UserListResponse>
 
     @GET("users")
     suspend fun getUsers(@Query("page") page: Int): Users

@@ -6,7 +6,7 @@ import database.MyDatabase
 
 class MyApplication : Application() {
 
-    lateinit var database: MyDatabase
+    private lateinit var database: MyDatabase
 
     override fun onCreate() {
         super.onCreate()

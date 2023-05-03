@@ -5,29 +5,44 @@ import adapters.UsersAdapter
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.homework_5.databinding.ActivityMainBinding
 import entities.UserEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import modules.ApplicationModule
+import modules.DaggerMyComponent
+import modules.UserRepositoryModule
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit.UserService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import viewmodels.MyViewModel
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
-    lateinit var adapterUsers : UsersAdapter
-    private lateinit var userRepository: UserRepository
+    lateinit var adapterUsers: UsersAdapter
+
+    @Inject
+    lateinit var myViewModel: MyViewModel
+
+    @Inject
+    lateinit var userRepository: UserRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        DaggerMyComponent.builder()
+            .applicationModule(ApplicationModule(application))
+            .userRepositoryModule(UserRepositoryModule(application))
+            .build()
+            .inject(this)
 
         userRepository = UserRepository(application)
 
@@ -82,9 +97,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
 }
+
 // DESCRIPTION
 //--------------------------------------------------------------------------------------------------
 
