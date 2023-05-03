@@ -6,33 +6,25 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.AdapterView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.homework_5.databinding.ActivityMain3Binding
-import dataclasses.User
+import dagger.hilt.android.AndroidEntryPoint
 import dataclasses.UserService
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
 
     private lateinit var binding: ActivityMain3Binding
     private lateinit var userAdapter: UserAdapter
     private lateinit var recyclerView: RecyclerView
-    private val userService by lazy {
-        Retrofit.Builder()
-            .baseUrl("https://reqres.in/api/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .build()
-            .create(UserService::class.java)
-    }
+
+    @Inject
+    lateinit var userService: UserService
 
     @SuppressLint("CheckResult", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,12 +32,11 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
         binding = ActivityMain3Binding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        recyclerView = findViewById(R.id.recyclerView)
         userAdapter = UserAdapter.getInstance(this)
-        recyclerView.adapter = userAdapter
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = userAdapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
-        userService.getUsers(2)
+        userService.getUsers(1)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -58,11 +49,9 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
         binding.floatingActionButton.setOnClickListener {
             addUser()
         }
-
-
     }
 
-    private fun addUser(){
+    private fun addUser() {
         val fragment = FragmentNewUser()
         supportFragmentManager.beginTransaction().apply {
             setCustomAnimations(
@@ -83,18 +72,19 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
         args.putInt("userId", userId)
         fragment.arguments = args
         supportFragmentManager.beginTransaction().apply {
-                setCustomAnimations(
-                    R.anim.slide_in_left,
-                    R.anim.slide_out_right,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                )
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit()
-            }
+            setCustomAnimations(
+                R.anim.slide_in_left,
+                R.anim.slide_out_right,
+                R.anim.fade_in,
+                R.anim.fade_out
+            )
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
     }
 }
+
 
 
 /*------------------- Description----------------
