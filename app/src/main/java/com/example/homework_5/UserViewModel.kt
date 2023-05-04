@@ -12,10 +12,6 @@ class UserViewModel : ViewModel() {
     private val userRepository = UserRepository()
     private val _users = MutableLiveData<UserResponse>()
 
-//    fun getUsers(): LiveData<UserResponse> {
-//        return userRepository.getUsers()
-//    }
-
     val users: LiveData<UserResponse>
         get() = _users
 
@@ -24,5 +20,4 @@ class UserViewModel : ViewModel() {
             _users.value = userRepository.getUsers1()
         }
     }
-
 }

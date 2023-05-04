@@ -17,27 +17,8 @@ class UserRepository {
         .build()
         .create(UserService::class.java)
 
-    fun getUsers(): MutableLiveData<UserResponse> {
-        val data = MutableLiveData<UserResponse>()
-
-        userService.getUsers(2).enqueue( object : Callback<UserResponse> {
-            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
-                if (response.isSuccessful) {
-                    data.value = response.body()
-                }
-            }
-
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
-
-            }
-        })
-
-        return data
-    }
-
     suspend fun getUsers1(): UserResponse {
         return userService.getUsers1(1).body()!!
     }
-
 }
 
