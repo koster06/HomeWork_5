@@ -41,7 +41,6 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
             addUser()
         }
     }
-
     private fun addUser(){
         val fragment = FragmentNewUser()
         supportFragmentManager.beginTransaction().apply {
