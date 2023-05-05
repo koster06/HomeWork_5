@@ -1,15 +1,15 @@
-package com.example.homework_5
+package viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.homework_5.UserRepository
 import dataclasses.UserResponse
 import kotlinx.coroutines.launch
 
-class UserViewModel : ViewModel() {
+class UserViewModel (private val userRepository: UserRepository) : ViewModel() {
 
-    private val userRepository = UserRepository()
     private val _users = MutableLiveData<UserResponse>()
 
     val users: LiveData<UserResponse>
