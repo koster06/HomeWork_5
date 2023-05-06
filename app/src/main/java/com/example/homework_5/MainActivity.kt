@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
                 .commit()
         }
     }
-
+    @AddTrace(name = "onItemClick", enabled = true)
     override fun onItemClick(userId: Int) {
         val fragment = FragmentUserDetails()
         val args = Bundle()
