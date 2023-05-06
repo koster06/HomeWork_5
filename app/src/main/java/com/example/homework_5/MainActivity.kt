@@ -1,11 +1,14 @@
 package com.example.homework_5
 
 import adapter.UserAdapter
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.homework_5.databinding.ActivityMain3Binding
+import com.google.firebase.perf.FirebasePerformance
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -18,6 +21,7 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
     private lateinit var userAdapter: UserAdapter
     private val viewModelFactory: UserViewModelFactory by inject()
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMain3Binding.inflate(layoutInflater)
@@ -40,6 +44,20 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
         binding.floatingActionButton.setOnClickListener {
             addUser()
         }
+        with( binding.crashButton){
+            text = "Test Crash"
+            setOnClickListener {
+                throw RuntimeException("Test Crash") // Force a crash
+            }
+        }
+
+        (binding.crashButton.parent as? ViewGroup)?.removeView(binding.crashButton)
+        binding.root.addView(binding.crashButton, ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        ))
+
+
     }
     private fun addUser(){
         val fragment = FragmentNewUser()
