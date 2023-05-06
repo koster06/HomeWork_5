@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.homework_5.databinding.ActivityMain3Binding
-import com.google.firebase.perf.FirebasePerformance
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.perf.ktx.performance
+import com.google.firebase.perf.metrics.AddTrace
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -22,6 +24,7 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
     private val viewModelFactory: UserViewModelFactory by inject()
 
     @SuppressLint("SetTextI18n")
+    @AddTrace(name = "onCreateTrace", enabled = true)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMain3Binding.inflate(layoutInflater)
@@ -40,16 +43,19 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
         viewModel.users.observe(this) { users ->
             userAdapter.setItems(users)
         }
+        val myTrace = Firebase.performance.newTrace("test_trace")
+        myTrace.start()
 
         binding.floatingActionButton.setOnClickListener {
             addUser()
         }
-        with( binding.crashButton){
-            text = "Test Crash"
-            setOnClickListener {
-                throw RuntimeException("Test Crash") // Force a crash
+
+        myTrace.stop()
+
+        binding.crashButton.text = "Test Crash"
+        binding.crashButton.setOnClickListener {
+                throw RuntimeException("Test Crash")
             }
-        }
 
         (binding.crashButton.parent as? ViewGroup)?.removeView(binding.crashButton)
         binding.root.addView(binding.crashButton, ViewGroup.LayoutParams(
