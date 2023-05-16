@@ -1,4 +1,4 @@
-package com.example.homework_5
+package repository
 
 import dataclasses.UserResponse
 import dataclasses.UserService
