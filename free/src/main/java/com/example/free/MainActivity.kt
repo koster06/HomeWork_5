@@ -4,9 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -17,9 +25,10 @@ import androidx.compose.ui.unit.dp
 import com.example.free.ui.theme.HomeWork_5Theme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import coil.compose.rememberImagePainter
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -63,11 +72,28 @@ fun UserListScreen(viewModel: UserViewModelFree) {
         LazyColumn {
             items(users.size) { index ->
                 val user = users[index]
-                Text(
-                    text = user.first_name + " " + user.last_name,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(bottom = 18.dp)
-                )
+                Row(
+                    modifier = Modifier
+                        .padding(top = 18.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = rememberImagePainter(data = user.avatar),
+                        contentDescription = "User Avatar",
+                        modifier = Modifier
+                            .padding(start = 10.dp)
+                            .size(88.dp)
+                            .clip(CircleShape)
+                            .background(Color.LightGray)
+                    )
+                    Spacer(modifier = Modifier.width(18.dp))
+                    Text(
+                        text = user.first_name + " " + user.last_name,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(bottom = 18.dp)
+                    )
+                }
             }
         }
     }
