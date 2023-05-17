@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import com.example.free.ui.theme.HomeWork_5Theme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -66,7 +71,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun UserListScreen(viewModel: UserViewModelFree) {
+
     val users: List<UserFree> by viewModel.users.observeAsState(emptyList())
+    val showDialog = remember { mutableStateOf(false) }
+    val selectedUser = remember { mutableStateOf<UserFree?>(null) }
 
     if (users.isNotEmpty()) {
         LazyColumn {
@@ -74,6 +82,10 @@ fun UserListScreen(viewModel: UserViewModelFree) {
                 val user = users[index]
                 Row(
                     modifier = Modifier
+                        .clickable {
+                            selectedUser.value = user
+                            showDialog.value = true
+                        }
                         .padding(top = 18.dp)
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
@@ -96,6 +108,20 @@ fun UserListScreen(viewModel: UserViewModelFree) {
                 }
             }
         }
+    }
+    if (showDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showDialog.value = false },
+            title = { Text(text = "Limited Access") },
+            text = { Text(text = "You are using the free version and cannot view user details.") },
+            confirmButton = {
+                Button(
+                    onClick = { showDialog.value = false }
+                ) {
+                    Text(text = "OK")
+                }
+            }
+        )
     }
 }
 
