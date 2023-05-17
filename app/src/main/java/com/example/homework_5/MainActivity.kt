@@ -83,16 +83,6 @@ binding.crashButton.setOnClickListener {
         param(FirebaseAnalytics.Param.CONTENT_TYPE, "image")
     }
 }
-
-//        binding.crashButton.text = "Test Crash"
-//        binding.crashButton.setOnClickListener {
-//            val bundle = Bundle()
-//            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "button_id")
-//            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Button Click")
-//            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "button")
-//            analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
-//
-//            }
     }
     private fun addUser(){
         val fragment = FragmentNewUser()

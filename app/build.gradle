@@ -10,6 +10,15 @@ android {
     namespace 'com.example.homework_5'
     compileSdk 33
 
+    flavorDimensions "version"
+
+    productFlavors {
+        demo {
+            dimension "version"
+            // Настройки для бесплатной версии
+        }
+    }
+
     defaultConfig {
         applicationId "com.example.homework_5"
         minSdk 24
