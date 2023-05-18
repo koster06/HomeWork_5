@@ -1,14 +1,15 @@
 package com.example.free
 
+import android.util.Log
 import com.example.lib.UserLib
-import com.example.lib.UserServiceLib
 
-class UserRepositoryFree(private val userService: UserServiceLib) {
+class UserRepositoryFree(private val userService: UserServiceFree) {
 
     suspend fun getUsers(): List<UserLib> {
         val url = "https://reqres.in/api/users"
-        val response = userService.getUsers1(url)
+        val response = userService.getUsers(url)
         if (response.isSuccessful) {
+            Log.i("MSS", "getUsers()")
             val userResponse = response.body()
             return userResponse?.data ?: emptyList()
         } else {

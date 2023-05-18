@@ -1,6 +1,6 @@
 package applications
 
-import com.example.lib.UserServiceLib
+import com.example.homework_5.UserService
 import org.koin.dsl.module
 import repository.UserRepository
 import retrofit2.Retrofit
@@ -14,12 +14,12 @@ val appModule = module {
     factory { UserViewModelFactory(get()) }
 }
 
-private fun provideUserService(): UserServiceLib {
+private fun provideUserService(): UserService {
     return Retrofit.Builder()
         .baseUrl("https://reqres.in/api/")
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .build()
-        .create(UserServiceLib::class.java)
+        .create(UserService::class.java)
 }
 
