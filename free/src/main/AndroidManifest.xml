@@ -25,9 +25,15 @@
         </activity>
 
         <service
-            android:name=".MyStartedService"
+            android:name="services.MyStartedService"
             android:enabled="true"
             android:exported="false" />
+
+        <service
+            android:name="services.MyBoundService"
+            android:enabled="true"
+            android:exported="true" />
+
 
     </application>
 

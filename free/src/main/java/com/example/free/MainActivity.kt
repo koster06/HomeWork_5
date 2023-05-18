@@ -1,7 +1,11 @@
 package com.example.free
 
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -43,6 +47,8 @@ import com.google.firebase.ktx.Firebase
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import services.MyBoundService
+import services.MyStartedService
 
 class MainActivity : ComponentActivity() {
     private val userService = createUserService()
@@ -50,9 +56,26 @@ class MainActivity : ComponentActivity() {
     private val viewModelFactory = UserViewModelFactoryFree(userRepository)
     private val viewModel: UserViewModelFree by viewModels { viewModelFactory }
     private val analytics: FirebaseAnalytics = Firebase.analytics
+    private lateinit var serviceConnection: ServiceConnection
+    private var isBound = false
+    private var myBoundService: MyBoundService? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        serviceConnection = object : ServiceConnection {
+            override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+                val binder = service as MyBoundService.MyBinder
+                myBoundService = binder.getService()
+                isBound = true
+                myBoundService?.doSomething()
+            }
+
+            override fun onServiceDisconnected(name: ComponentName?) {
+                myBoundService = null
+                isBound = false
+            }
+        }
 
         val serviceIntent = Intent(this, MyStartedService::class.java)
         startService(serviceIntent)
@@ -82,6 +105,21 @@ class MainActivity : ComponentActivity() {
             .build()
             .create(UserServiceFree::class.java)
     }
+
+    override fun onStart() {
+        super.onStart()
+        val intent = Intent(this, MyBoundService::class.java)
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (isBound) {
+            unbindService(serviceConnection)
+            isBound = false
+        }
+    }
+
 }
 
 
@@ -139,6 +177,7 @@ fun UserListScreen(viewModel: UserViewModelFree) {
             }
         )
     }
+
 }
 
 @Preview(showBackground = true)
