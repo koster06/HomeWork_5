@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.example.free.ui.theme.HomeWork_5Theme
 import com.example.lib.UserLib
+import com.example.lib.UserServiceLib
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
@@ -69,13 +70,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun createUserService(): UserServiceFree {
+    private fun createUserService(): UserServiceLib {
         return Retrofit.Builder()
             .baseUrl("https://reqres.in/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
-            .create(UserServiceFree::class.java)
+            .create(UserServiceLib::class.java)
     }
 }
 
@@ -144,7 +145,7 @@ fun UserListScreenPreview() {
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .build()
-        .create(UserServiceFree::class.java)))
+        .create(UserServiceLib::class.java)))
     UserListScreen(viewModel)
 }
 

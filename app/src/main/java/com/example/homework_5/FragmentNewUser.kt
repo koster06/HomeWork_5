@@ -10,8 +10,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.homework_5.databinding.FragmentNewUserBinding
-import dataclasses.UserRequest
-import dataclasses.UserService
+import com.example.lib.UserRequestLib
+import com.example.lib.UserServiceLib
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -28,7 +28,7 @@ class FragmentNewUser: Fragment() {
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
-            .create(UserService::class.java)
+            .create(UserServiceLib::class.java)
     }
     private var disposable: Disposable? = null
 
@@ -65,7 +65,7 @@ class FragmentNewUser: Fragment() {
         })
 
         with(binding) {button.setOnClickListener {
-            val userRequest = UserRequest(etName.text.toString(), etJob.text.toString())
+            val userRequest = UserRequestLib(etName.text.toString(), etJob.text.toString())
             disposable = userService.createUser(userRequest)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
