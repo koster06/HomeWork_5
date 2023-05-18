@@ -3,6 +3,7 @@ package com.example.free
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
@@ -48,6 +49,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import services.MyBoundService
+import services.MyBroadcastReceiver
 import services.MyStartedService
 
 class MainActivity : ComponentActivity() {
@@ -59,9 +61,18 @@ class MainActivity : ComponentActivity() {
     private lateinit var serviceConnection: ServiceConnection
     private var isBound = false
     private var myBoundService: MyBoundService? = null
+    private lateinit var broadcastReceiver: MyBroadcastReceiver
+    private val filter = IntentFilter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        broadcastReceiver = MyBroadcastReceiver()
+        filter.addAction(Intent.ACTION_BOOT_COMPLETED)
+        filter.addAction(Intent.ACTION_SCREEN_ON)
+        filter.addAction(Intent.ACTION_SCREEN_OFF)
+
+        registerReceiver(broadcastReceiver, filter)
 
         serviceConnection = object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -118,6 +129,11 @@ class MainActivity : ComponentActivity() {
             unbindService(serviceConnection)
             isBound = false
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(broadcastReceiver)
     }
 
 }
