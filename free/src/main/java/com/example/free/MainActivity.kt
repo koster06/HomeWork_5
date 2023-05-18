@@ -35,6 +35,10 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.example.free.ui.theme.HomeWork_5Theme
 import com.example.lib.UserLib
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -44,9 +48,15 @@ class MainActivity : ComponentActivity() {
     private val userRepository = UserRepositoryFree(userService)
     private val viewModelFactory = UserViewModelFactoryFree(userRepository)
     private val viewModel: UserViewModelFree by viewModels { viewModelFactory }
+    private val analytics: FirebaseAnalytics = Firebase.analytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT) {
+            param(FirebaseAnalytics.Param.ITEM_ID, "id_Item")
+            param(FirebaseAnalytics.Param.ITEM_NAME, "user")
+            param(FirebaseAnalytics.Param.CONTENT_TYPE, "object")
+        }
         setContent {
             HomeWork_5Theme {
                 Surface(
