@@ -1,6 +1,6 @@
-package dataclasses
+package com.example.lib
 
-data class User(
+data class UserLib(
     val id: Int,
     val email: String,
     val first_name: String,

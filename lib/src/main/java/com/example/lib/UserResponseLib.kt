@@ -1,9 +1,9 @@
-package com.example.free
+package com.example.lib
 
-data class UserResponseFree(
+data class UserResponseLib(
     val page: Int,
     val perPage: Int,
     val total: Int,
     val totalPages: Int,
-    val data: List<UserFree>
+    val data: List<UserLib>
 )

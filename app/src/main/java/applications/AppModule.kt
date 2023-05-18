@@ -1,4 +1,4 @@
-package com.example.homework_5
+package applications
 
 import dataclasses.UserService
 import org.koin.dsl.module

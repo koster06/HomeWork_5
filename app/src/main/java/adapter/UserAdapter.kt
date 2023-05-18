@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.homework_5.databinding.UserItemBinding
-import dataclasses.User
-import dataclasses.UserResponse
+import com.example.lib.UserLib
+import com.example.lib.UserResponseLib
 
 class UserAdapter(private val listener: OnItemClickListener) :
     RecyclerView.Adapter<UserAdapter.ViewHolder>() {
@@ -17,10 +17,10 @@ class UserAdapter(private val listener: OnItemClickListener) :
         fun onItemClick(userId: Int)
     }
 
-    private var items = listOf<User>()
+    private var items = listOf<UserLib>()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setItems(items: UserResponse) {
+    fun setItems(items: UserResponseLib) {
         this.items = items.data
         notifyDataSetChanged()
     }
@@ -29,7 +29,7 @@ class UserAdapter(private val listener: OnItemClickListener) :
         private val binding = UserItemBinding.bind(view)
 
         @SuppressLint("SetTextI18n")
-        fun bind(user: User) = with(binding){
+        fun bind(user: UserLib) = with(binding){
             nameTextView.text = "${user.first_name} ${user.last_name}"
             emailTextView.text = user.email
             Glide.with(itemView.context)

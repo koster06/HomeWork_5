@@ -1,8 +1,10 @@
 package com.example.free
 
+import com.example.lib.UserLib
+
 class UserRepositoryFree(private val userService: UserServiceFree) {
 
-    suspend fun getUsers(): List<UserFree> {
+    suspend fun getUsers(): List<UserLib> {
         val url = "https://reqres.in/api/users"
         val response = userService.getUsers(url)
         if (response.isSuccessful) {

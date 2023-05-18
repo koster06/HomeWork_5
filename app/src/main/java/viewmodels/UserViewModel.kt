@@ -4,15 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import repository.UserRepository
-import dataclasses.UserResponse
+import com.example.lib.UserResponseLib
 import kotlinx.coroutines.launch
+import repository.UserRepository
 
 class UserViewModel (private val userRepository: UserRepository) : ViewModel() {
 
-    private val _users = MutableLiveData<UserResponse>()
+    private val _users = MutableLiveData<UserResponseLib>()
 
-    val users: LiveData<UserResponse>
+    val users: LiveData<UserResponseLib>
         get() = _users
 
     init {
