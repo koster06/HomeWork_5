@@ -2,7 +2,12 @@ package com.example.homework_5
 
 import adapter.UserAdapter
 import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,6 +42,8 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
             androidContext(this@MainActivity)
             modules(appModule)
         }
+
+        createAlarm(this, 10000)
 
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.UNMETERED) // Wi-Fi подключение
@@ -95,6 +102,21 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
                 .addToBackStack(null)
                 .commit()
         }
+    }
+
+    private fun createAlarm(context: Context, delayMillis: Long) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmIntent = Intent(context, AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            0,
+            alarmIntent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val triggerTime = SystemClock.elapsedRealtime() + delayMillis
+
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerTime, pendingIntent)
     }
 }
 
