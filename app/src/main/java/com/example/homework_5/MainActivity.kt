@@ -2,9 +2,12 @@ package com.example.homework_5
 
 import adapter.UserAdapter
 import android.annotation.SuppressLint
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import applications.appModule
@@ -21,7 +24,6 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
     private lateinit var binding: ActivityMain3Binding
     private lateinit var userAdapter: UserAdapter
     private val viewModelFactory: UserViewModelFactory by inject()
-    private lateinit var notificationManager: NotificationManagerCompat
 
     @SuppressLint("SetTextI18n")
     @AddTrace(name = "onCreateTrace", enabled = true)
@@ -30,14 +32,19 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
         binding = ActivityMain3Binding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        notificationManager = NotificationManagerCompat.from(this)
-
-
-
         startKoin {
             androidContext(this@MainActivity)
             modules(appModule)
         }
+
+        val jobService = ComponentName(this, MyJobService::class.java)
+        val jobInfo = JobInfo.Builder(1, jobService)
+            .setMinimumLatency(1000)
+            .setPersisted(true)
+            .build()
+
+        val jobScheduler = this.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        jobScheduler.schedule(jobInfo)
 
         userAdapter = UserAdapter.getInstance(this)
         binding.recyclerView.adapter = userAdapter
@@ -50,9 +57,6 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
 
         binding.floatingActionButton.setOnClickListener {
             addUser()
-        }
-        binding.crashButton.setOnClickListener {
-
         }
     }
 
