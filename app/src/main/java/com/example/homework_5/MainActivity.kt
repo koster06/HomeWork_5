@@ -2,14 +2,15 @@ package com.example.homework_5
 
 import adapter.UserAdapter
 import android.annotation.SuppressLint
-import android.app.job.JobInfo
-import android.app.job.JobScheduler
-import android.content.ComponentName
-import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import applications.appModule
 import com.example.homework_5.databinding.ActivityMain3Binding
 import com.google.firebase.perf.metrics.AddTrace
@@ -37,14 +38,16 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
             modules(appModule)
         }
 
-        val jobService = ComponentName(this, MyJobService::class.java)
-        val jobInfo = JobInfo.Builder(1, jobService)
-            .setMinimumLatency(1000)
-            .setPersisted(true)
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.UNMETERED) // Wi-Fi подключение
+            .setRequiresBatteryNotLow(true) // Заряд батареи не низкий
             .build()
 
-        val jobScheduler = this.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-        jobScheduler.schedule(jobInfo)
+        val workRequest: WorkRequest = OneTimeWorkRequest.Builder(MyWorker::class.java)
+            .setConstraints(constraints)
+            .build()
+
+        WorkManager.getInstance(this).enqueue(workRequest)
 
         userAdapter = UserAdapter.getInstance(this)
         binding.recyclerView.adapter = userAdapter
