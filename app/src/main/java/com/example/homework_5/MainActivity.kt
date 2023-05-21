@@ -8,6 +8,8 @@ import android.app.NotificationManager
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -16,7 +18,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import applications.appModule
 import com.example.homework_5.databinding.ActivityMain3Binding
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.perf.metrics.AddTrace
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig.TAG
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -44,6 +49,19 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
         super.onCreate(savedInstanceState)
         binding = ActivityMain3Binding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+            // Get new FCM registration token
+            val token = task.result
+            // Log and toast
+            val msg = getString(R.string.msg_token_fmt, token)
+            Log.d(TAG, msg)
+            Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+        })
 
         notificationManager = NotificationManagerCompat.from(this)
 
@@ -195,7 +213,7 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
                 }
                 notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
             } else {
-                // Разрешение не получено, обработайте этот случай соответственно
+                //TODO
             }
         }
     }
