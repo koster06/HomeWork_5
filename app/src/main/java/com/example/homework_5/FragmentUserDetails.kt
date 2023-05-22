@@ -9,10 +9,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.homework_5.databinding.FragmentUserDetailsBinding
-import dataclasses.UserService
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -20,15 +19,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 class FragmentUserDetails : Fragment() {
 
     private lateinit var binding: FragmentUserDetailsBinding
-    private val userService by lazy {
-        Retrofit.Builder()
-            .baseUrl("https://reqres.in/api/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .build()
-            .create(UserService::class.java)
-    }
-    private lateinit var disposable: Disposable
+    var userService: UserService = Retrofit.Builder()
+        .baseUrl("https://reqres.in/api/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+        .build()
+        .create(UserService::class.java)
+
+    lateinit var disposable: Disposable
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentUserDetailsBinding.inflate(inflater, container, false)

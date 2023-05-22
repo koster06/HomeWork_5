@@ -5,4 +5,4 @@ data class NewUser (
     val job: String,
     val id: String,
     val createdAt: String
-        )
+    )

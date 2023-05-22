@@ -1,7 +1,7 @@
 package repository
 
+import com.example.homework_5.UserService
 import com.example.lib.UserResponseLib
-import dataclasses.UserService
 
 class UserRepository(private val userService: UserService)  {
 
