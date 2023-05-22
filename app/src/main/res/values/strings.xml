@@ -20,4 +20,9 @@
     <string name="app_widget_description">This is an app widget description</string>
     <string name="counter_0">0</string>
     <string name="click_me">Click me!</string>
+    <string name="save">Save</string>
+    <string name="radiobutton_launch">Launch app</string>
+    <string name="radiobutton_background">Set background</string>
+    <string name="radiobutton_color">Text color</string>
+    <string name="radiobutton_size">Text size</string>
 </resources>

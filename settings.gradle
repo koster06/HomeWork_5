@@ -14,4 +14,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "HomeWork_5"
 include ':app'
-include ':lib'
