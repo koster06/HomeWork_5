@@ -17,7 +17,7 @@ import viewmodels.UserViewModelFactory
 
 class MainActivity : AppCompatActivity(), UserAdapter.OnItemClickListener {
 
-    private lateinit var binding: ActivityMain3Binding
+    lateinit var binding: ActivityMain3Binding
     lateinit var userAdapter: UserAdapter
     private val viewModelFactory: UserViewModelFactory by inject()
 
