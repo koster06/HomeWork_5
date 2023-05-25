@@ -1,4 +1,4 @@
-package com.example.free
+package com.example.free.useless
 
 import com.example.lib.UserLib
 

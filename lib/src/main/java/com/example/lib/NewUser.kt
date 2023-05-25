@@ -1,4 +1,4 @@
-package dataclasses
+package com.example.lib
 
 data class NewUser (
     val name: String,

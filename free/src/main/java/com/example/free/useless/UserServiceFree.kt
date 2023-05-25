@@ -1,18 +1,18 @@
-package dataclasses
+package com.example.free.useless
 
 import com.example.lib.NewUser
 import com.example.lib.UserRequest
 import com.example.lib.UserResponseLib
 import io.reactivex.rxjava3.core.Single
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Url
 
-interface UserService {
+interface UserServiceFree {
     @GET
-    suspend fun getUsers1(@Url url: String) : Response<UserResponseLib>
-
-    @GET("users/{userId}")
-    fun getUser(@Path("userId") userId: Int): Single<UserUnic>
+    suspend fun getUsers(@Url url: String) : Response<UserResponseLib>
 
     @POST("/api/users")
     fun createUser(@Body userRequest: UserRequest): Single<NewUser>
