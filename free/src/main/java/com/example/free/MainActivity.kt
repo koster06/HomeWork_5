@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -54,9 +55,7 @@ class MainActivity2 : ComponentActivity() {
                     startDestination = "screen_1"
                 ) {
                     composable("screen_1") {
-                        Screen1 {
-                            navController.navigate("screen_2")
-                        }
+                        Screen1(navController)
                     }
 
                     composable("screen_2") {
@@ -71,9 +70,7 @@ class MainActivity2 : ComponentActivity() {
                     }
                     composable("screen_3/{userId}") { backStackEntry ->
                         val userId = backStackEntry.arguments?.getString("userId")
-                        UserInformationScreen(userId) {
-                            navController.popBackStack()
-                        }
+                        UserInformationScreen(userId, navController)
                     }
 
                 }
@@ -84,7 +81,7 @@ class MainActivity2 : ComponentActivity() {
 
 @Composable
 fun Screen1(
-    onClick: () -> Unit
+    navController: NavController
 ) {
 
     val userService = createUserService()
@@ -98,16 +95,15 @@ fun Screen1(
             color = MaterialTheme.colorScheme.background
 
         ) {
-            Screen(viewModel)
-            MyScreenContent(onClick)
+            Screen(viewModel, navController)
+            MyScreenContent(navController)
         }
     }
 }
 @Composable
-fun Screen (viewModel: UserViewModelFree) {
+fun Screen (viewModel: UserViewModelFree, navController: NavController) {
 
     val users: List<UserLib> by viewModel.users.observeAsState(emptyList())
-    val showDialog = remember { mutableStateOf(false) }
     val selectedUser = remember { mutableStateOf<UserLib?>(null) }
 
     if (users.isNotEmpty()) {
@@ -118,7 +114,7 @@ fun Screen (viewModel: UserViewModelFree) {
                     modifier = Modifier
                         .clickable {
                             selectedUser.value = user
-//                            showDialog.value = true
+                            navController.navigate("screen_3/${user.id}")
                         }
                         .padding(top = 18.dp)
                         .fillMaxWidth(),
@@ -145,23 +141,9 @@ fun Screen (viewModel: UserViewModelFree) {
         }
 
     }
-//    if (showDialog.value) {
-//        AlertDialog(
-//            onDismissRequest = { showDialog.value = false },
-//            title = { Text(text = "Limited Access") },
-//            text = { Text(text = "You are using the free version and cannot view user details.") },
-//            confirmButton = {
-//                Button(
-//                    onClick = { showDialog.value = false }
-//                ) {
-//                    Text(text = "OK")
-//                }
-//            }
-//        )
-//    }
 }
 @Composable
-fun MyScreenContent(onClick: () -> Unit) {
+fun MyScreenContent(navController: NavController) {
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -170,7 +152,7 @@ fun MyScreenContent(onClick: () -> Unit) {
 
         FloatingActionButton(
             onClick = {
-                onClick()
+                navController.navigate("screen_2")
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
