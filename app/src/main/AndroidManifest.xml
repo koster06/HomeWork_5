@@ -8,6 +8,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.HomeWork_5">
+
         <activity
             android:name=".WidgetConfigActivity"
             android:exported="true"
@@ -16,6 +17,7 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+
         <receiver
             android:name=".MyWidget"
             android:exported="false">
