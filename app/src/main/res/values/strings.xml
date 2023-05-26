@@ -7,10 +7,22 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-
+    <string name="msg_token_fmt">FCM Registration Token: %s</string>
     <string name="menu_home">Home</string>
+    <string name="widget_click_count">Clicks: %d</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello Message fragment</string>
+    <string name="name">Name</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
+    <string name="counter_0">0</string>
+    <string name="click_me">Click me!</string>
+    <string name="save">Save</string>
+    <string name="radiobutton_launch">Launch app</string>
+    <string name="radiobutton_background">Set background</string>
+    <string name="radiobutton_color">Text color</string>
+    <string name="radiobutton_size">Text size</string>
 </resources>
